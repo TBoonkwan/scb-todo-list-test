@@ -1,0 +1,85 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:scb_test/core/provider/app_provider.dart';
+import 'package:scb_test/core/route/app_route.dart';
+import 'package:scb_test/di/app_module.dart';
+import 'package:scb_test/features/todo/config/todo_list_route.dart';
+import 'package:scb_test/theme/color/app_color.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await GetStorage.init();
+
+  await dotenv.load(fileName: "assets/.env");
+
+  await AppModule().provideModule();
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({
+    super.key,
+  });
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: AppProvider().provider,
+      child: MaterialApp(
+        initialRoute: "/",
+        routes: AppRoute().screens,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+            color: AppColor.primaryColor,
+          ),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            elevation: 8,
+            backgroundColor: AppColor.primaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32),
+            ),
+            iconSize: 32,
+          ),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: AppColor.primaryColor,
+            brightness: Brightness.light,
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColor.primaryColor)),
+          useMaterial3: true,
+        ),
+        home: SplashSceren(),
+      ),
+    );
+  }
+}
+
+class SplashSceren extends StatefulWidget {
+  @override
+  State<SplashSceren> createState() => _SplashScerenState();
+}
+
+class _SplashScerenState extends State<SplashSceren> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Get.to(TodoListScreen());
+      Navigator.of(context).pushNamed(
+        TodoListRoute.todoListScreen,
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold();
+  }
+}
