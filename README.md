@@ -1,16 +1,17 @@
-# scb_test
+# SCBTodoListTest
+This project make for SCB Technical Test
 
-A new Flutter project.
+# Required
+- Flutter **3.16.9**
 
-## Getting Started
+# Optional
+- Required FVM to config flutter version
+- You can run this shell script via '**$root/initial.sh**'.
 
-This project is a starting point for a Flutter application.
+# Detail
+We have 2 environment for develop in this project. You can change environment in assets.env to '**mock**' or '**prod**' for build project
+- **MOCK** : get mock data from json file via mock datasource
+- **PROD** : get real data from service via remote datasource
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Testing
+We using mockito to write unit test in bloc cubit
