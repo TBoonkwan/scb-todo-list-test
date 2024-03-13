@@ -1,8 +1,9 @@
 enum TodoListStatus {
-  todo(0),
-  success(1);
+  todo("TODO"),
+  doing("DOING"),
+  done("DONE");
 
-  final int status;
+  final String status;
 
   const TodoListStatus(this.status);
 }

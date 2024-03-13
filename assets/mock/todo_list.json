@@ -1,22 +1,27 @@
 {
   "task": [
     {
-      "id" : 1,
+      "id": 1,
       "title": "Title #1",
       "description": "Description #1",
-      "status": 0
+      "createdAt": "2023-03-25T09:00:00Z",
+      "status": "TODO"
     },
     {
-      "id" : 2,
+      "id": 2,
       "title": "Title #2",
       "description": "Description #2",
-      "status": 1
+      "createdAt": "2023-03-25T09:00:00Z",
+      "status": "DOING"
     },
     {
-      "id" : 3,
+      "id": 3,
       "title": "Title #3",
       "description": "Description #3",
-      "status": 1
+      "createdAt": "2023-03-25T09:00:00Z",
+      "status": "DONE"
     }
-  ]
+  ],
+  "pageNumber": 0,
+  "totalPages": 16
 }
