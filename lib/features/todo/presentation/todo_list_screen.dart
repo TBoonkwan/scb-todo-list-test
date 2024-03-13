@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:scb_test/features/base/base_page.dart';
+import 'package:scb_test/features/todo/data/constants/todo_list_constants.dart';
 import 'package:scb_test/features/todo/data/model/task.dart';
 import 'package:scb_test/features/todo/presentation/todo_list_page_cubit.dart';
 import 'package:scb_test/features/todo/presentation/todo_list_page_state.dart';
@@ -17,8 +18,6 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends BasePage<TodoListScreen> {
-  String selectedTab = "Todo";
-
   List<String> tabList = [
     "Todo",
     "Doing",
@@ -29,7 +28,9 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TodoListPageCubit>().getTodoList();
+      context
+          .read<TodoListPageCubit>()
+          .getTodoList(status: TodoListStatus.todo.value);
     });
   }
 
@@ -57,6 +58,9 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
               preferredSize: const Size(double.infinity, 56),
               child: TodoFilterStatusTab(
                 tabList: tabList,
+                tabSelected: (status) {
+                  context.read<TodoListPageCubit>().getTodoList(status: status);
+                },
               ),
             ),
           ),
@@ -85,10 +89,12 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
 
 class TodoFilterStatusTab extends StatelessWidget {
   final List<String> tabList;
+  final Function(String) tabSelected;
 
   const TodoFilterStatusTab({
     super.key,
     required this.tabList,
+    required this.tabSelected,
   });
 
   @override
@@ -97,6 +103,9 @@ class TodoFilterStatusTab extends StatelessWidget {
       length: tabList.length,
       animationDuration: const Duration(milliseconds: 500),
       child: TabBar(
+        onTap: (index) {
+          tabSelected.call(tabList[index]);
+        },
         labelColor: Colors.white,
         unselectedLabelColor: Colors.white38,
         indicatorColor: Colors.transparent,
@@ -148,7 +157,9 @@ class TodoListWidget extends StatelessWidget {
 
     return ListView.separated(
       primary: false,
-      padding: const EdgeInsets.all(0),
+      padding: const EdgeInsets.symmetric(
+        vertical: 16,
+      ),
       shrinkWrap: true,
       key: const Key("ListTodoWidget"),
       itemBuilder: (BuildContext context, int index) {
@@ -213,10 +224,19 @@ class ItemTodoListWidget extends StatelessWidget {
       onLongPress: () => onDeleteTaskClickListener.call(),
       title: Text(
         item.title.toString(),
+        style: Theme.of(context).textTheme.titleMedium,
+        overflow: TextOverflow.ellipsis,
       ),
       subtitle: item.description?.isEmpty == true
           ? null
-          : Text(item.description.toString()),
+          : Text(
+              item.description.toString(),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Colors.black45,
+                  ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
     );
   }
 }

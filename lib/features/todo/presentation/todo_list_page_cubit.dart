@@ -13,7 +13,7 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
     required this.todoListRepository,
   }) : super(const TodoListPageState());
 
-  Future getTodoList() async {
+  Future getTodoList({required String status,}) async {
     emit(
       state.copyWith(eventState: TodoListPageEventState.loading),
     );
@@ -24,7 +24,7 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
       limit: 10,
       sortBy: TodoListSortBy.createdAt.value,
       isAsc: true,
-      status: TodoListStatus.todo.value,
+      status: status.toUpperCase(),
     ));
 
     await Future.delayed(
