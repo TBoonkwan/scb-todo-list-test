@@ -5,7 +5,7 @@ class InputState {
 
   late StreamController<String> _inputController;
   late StreamController<bool> _verifyController;
-  late StreamController<bool> _confirmedController;
+  StreamController<bool>? _confirmedController;
 
   /// Get latest input text stream.
   Stream<String> get currentInput => _inputController.stream;
@@ -14,7 +14,7 @@ class InputState {
   Stream<bool> get verifyInput => _verifyController.stream;
 
   /// Get confirmed result stream.
-  Stream<bool> get confirmed => _confirmedController.stream;
+  Stream<bool>? get confirmed => _confirmedController?.stream;
 
   /// Add some text at the end and stream it.
   void addCharacter(String input) {
@@ -41,11 +41,11 @@ class InputState {
   }
 
   void setConfirmed() {
-    _confirmedController.add(true);
+    _confirmedController?.add(true);
   }
 
   void unsetConfirmed() {
-    _confirmedController.add(false);
+    _confirmedController?.add(false);
   }
 
   /// Verify that the input is correct.
@@ -73,6 +73,6 @@ class InputState {
   void dispose() {
     _inputController.close();
     _verifyController.close();
-    _confirmedController.close();
+    _confirmedController?.close();
   }
 }

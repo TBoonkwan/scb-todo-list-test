@@ -5,7 +5,10 @@ import 'package:get_storage/get_storage.dart';
 import 'package:scb_test/core/provider/app_provider.dart';
 import 'package:scb_test/core/route/app_route.dart';
 import 'package:scb_test/di/app_module.dart';
+import 'package:scb_test/features/base/base_page_cubit.dart';
+import 'package:scb_test/features/base/base_page_state.dart';
 import 'package:scb_test/features/passcode/config/input_passcode_route.dart';
+import 'package:scb_test/features/todo/config/todo_list_route.dart';
 import 'package:scb_test/theme/color/app_color.dart';
 
 void main() async {
@@ -20,12 +23,16 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({
     super.key,
   });
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -55,18 +62,18 @@ class MyApp extends StatelessWidget {
                   backgroundColor: AppColor.primaryColor)),
           useMaterial3: true,
         ),
-        home: SplashSceren(),
+        home: SplashScreen(),
       ),
     );
   }
 }
 
-class SplashSceren extends StatefulWidget {
+class SplashScreen extends StatefulWidget {
   @override
-  State<SplashSceren> createState() => _SplashScerenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScerenState extends State<SplashSceren> {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
@@ -79,6 +86,6 @@ class _SplashScerenState extends State<SplashSceren> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return const Scaffold();
   }
 }

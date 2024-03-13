@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
+import 'package:scb_test/features/base/base_page.dart';
+import 'package:scb_test/features/base/base_page_state.dart';
 import 'package:scb_test/features/todo/data/model/task.dart';
 import 'package:scb_test/features/todo/presentation/todo_list_page_cubit.dart';
 import 'package:scb_test/features/todo/presentation/todo_list_page_state.dart';
@@ -15,9 +17,9 @@ class TodoListScreen extends StatefulWidget {
   State<TodoListScreen> createState() => _TodoListScreenState();
 }
 
-class _TodoListScreenState extends State<TodoListScreen> {
+class _TodoListScreenState extends BasePage<TodoListScreen> {
   @override
-  Widget build(BuildContext context) {
+  Widget child(BuildContext context) {
     final TodoListPageCubit cubit = context.read<TodoListPageCubit>();
 
     cubit.getTodoList();
@@ -34,9 +36,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
       ),
       body: BlocBuilder<TodoListPageCubit, TodoListPageState>(
         builder: (
-          BuildContext context,
-          TodoListPageState state,
-        ) {
+            BuildContext context,
+            TodoListPageState state,
+            ) {
           if (state.eventState == TodoListPageEventState.loading) {
             return const Center(child: CircularProgressIndicator());
           }

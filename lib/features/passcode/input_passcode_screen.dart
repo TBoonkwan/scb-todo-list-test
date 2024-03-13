@@ -9,11 +9,31 @@ import 'package:scb_test/shared/passcode/configurations/secrets_config.dart';
 import 'package:scb_test/shared/passcode/screen_lock.dart';
 import 'package:scb_test/theme/color/app_color.dart';
 
+class InputScreenConfig {
+  bool shouldShowCloseIcon;
+
+  InputScreenConfig({
+    this.shouldShowCloseIcon = true,
+  });
+}
+
 class InputPasscodeScreen extends StatelessWidget {
-  const InputPasscodeScreen({Key? key}) : super(key: key);
+  InputScreenConfig? _inputScreenConfig;
+
+  InputPasscodeScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final dynamic arguments = ModalRoute.of(context)?.settings.arguments;
+
+    if (arguments!=null && arguments is InputScreenConfig) {
+      _inputScreenConfig = arguments;
+    }else{
+      _inputScreenConfig = InputScreenConfig();
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -24,6 +44,7 @@ class InputPasscodeScreen extends StatelessWidget {
             didError: (times) {},
             didTextChanged: (passcode) async {},
             didMaxRetries: (time) {},
+            didConfirmed: (passcode) {},
             didUnlocked: () {
               // if password is correct
               Navigator.of(context).popAndPushNamed(
@@ -91,19 +112,26 @@ class InputPasscodeScreen extends StatelessWidget {
           Positioned(
             top: 56,
             right: 24,
-            child: IconButton(
-              onPressed: () {
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                } else {
-                  exit(0);
-                }
-              },
-              icon: const Icon(
-                Icons.close,
-                color: Colors.white,
-              ),
-            ),
+            child: Builder(builder: (context) {
+              if (_inputScreenConfig?.shouldShowCloseIcon == true) {
+                return IconButton(
+                  onPressed: () {
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    } else {
+                      exit(0);
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                );
+              }
+
+              return const SizedBox();
+
+            }),
           )
         ],
       ),
