@@ -14,23 +14,21 @@ class BasePageCubit extends Cubit<BasePageState> {
     timer = Timer.periodic(
       maxTimeout,
       (Timer timer) {
-        timer.cancel();
         emit(
           state.copyWith(eventState: BasePageEventState.timeout),
         );
+        timer.cancel();
       },
     );
   }
 
   void reset() {
+    timer?.cancel();
+
     emit(
       state.copyWith(eventState: BasePageEventState.none),
     );
-
-    timer?.cancel();;
   }
 
-  void updateLatestActive() {
-
-  }
+  void updateLatestActive() {}
 }

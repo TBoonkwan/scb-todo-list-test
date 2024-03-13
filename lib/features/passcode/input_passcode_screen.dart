@@ -73,7 +73,7 @@ class _InputPasscodeScreenState extends State<InputPasscodeScreen> {
               spacing: 16,
               padding: const EdgeInsets.all(40),
               secretConfig: SecretConfig(
-                  disabledColor: Colors.white,
+                  disabledColor: Colors.white38,
                   enabledColor: AppColor.primaryColor,
                   height: 16,
                   width: 16,

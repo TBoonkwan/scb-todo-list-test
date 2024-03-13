@@ -6,7 +6,9 @@ import 'package:scb_test/features/todo/data/repository/todo_repository.dart';
 import 'package:scb_test/features/todo/data/source/mock/mock_todo_list_data_source.dart';
 import 'package:scb_test/features/todo/data/source/remote/remote_todo_list_data_source.dart';
 import 'package:scb_test/features/todo/data/source/todo_list_data_source.dart';
+import 'package:scb_test/features/todo/domain/mapper/todo_list_mapper.dart';
 import 'package:scb_test/features/todo/domain/repository/todo_repository.dart';
+import 'package:scb_test/features/todo/domain/usecase/get_todo_list_usecase.dart';
 
 class TodoListModule extends BaseModule {
   @override
@@ -25,6 +27,17 @@ class TodoListModule extends BaseModule {
       () => TodoListRepository(
           dataSource: moduleProvider.get<TodoListDataSource>(
               instanceName: AppConfig.getEnvironmentInstanceName())),
+    );
+
+    moduleProvider.registerFactory(
+      () => TodoListMapper(),
+    );
+
+    moduleProvider.registerFactory<IGetTodoListUseCase>(
+      () => GetTodoListUseCase(
+        todoListRepository: moduleProvider.get<ITodoListRepository>(),
+        mapper: moduleProvider.get(),
+      ),
     );
   }
 }

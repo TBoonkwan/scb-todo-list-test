@@ -28,7 +28,10 @@ abstract class BasePage<T extends StatefulWidget> extends State<T> {
   @override
   Widget build(BuildContext context) {
     return Listener(
-      onPointerDown: (_) => basePageCubit?.reset(),
+      onPointerDown: (_) {
+        basePageCubit?.reset();
+        basePageCubit?.startTimer();
+      },
       child: BlocListener<BasePageCubit, BasePageState>(
         listenWhen: (prev, current) => current.eventState != prev.eventState,
         listener: (context, state) async {

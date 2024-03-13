@@ -1,11 +1,12 @@
 import "package:equatable/equatable.dart";
 import "package:scb_test/features/todo/data/model/task.dart";
+import "package:scb_test/features/todo/domain/entity/todo_list_ui_model.dart";
 
 class TodoListPageState extends Equatable {
   final TodoListPageEventState? eventState;
   final TodoListPageActionState? actionState;
 
-  final List<Task> taskList;
+  final List<TodoListUIModel> taskList;
 
   const TodoListPageState({
     this.eventState = TodoListPageEventState.loading,
@@ -23,7 +24,7 @@ class TodoListPageState extends Equatable {
   TodoListPageState copyWith({
     TodoListPageEventState? eventState,
     TodoListPageActionState? actionState,
-    List<Task>? taskList,
+    List<TodoListUIModel>? taskList,
   }) {
     return TodoListPageState(
       eventState: eventState ?? this.eventState,

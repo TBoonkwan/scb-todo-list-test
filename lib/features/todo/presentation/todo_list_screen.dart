@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:scb_test/features/base/base_page.dart';
 import 'package:scb_test/features/todo/data/constants/todo_list_constants.dart';
-import 'package:scb_test/features/todo/data/model/task.dart';
+import 'package:scb_test/features/todo/domain/entity/todo_list_ui_model.dart';
 import 'package:scb_test/features/todo/presentation/todo_list_page_cubit.dart';
 import 'package:scb_test/features/todo/presentation/todo_list_page_state.dart';
 import 'package:scb_test/shared/dialog/confirmation_to_delete_dialog.dart';
@@ -109,29 +109,87 @@ class TodoFilterStatusTab extends StatelessWidget {
         labelColor: Colors.white,
         unselectedLabelColor: Colors.white38,
         indicatorColor: Colors.transparent,
-        tabs: tabList
-            .map(
-              (e) => Tab(
-                text: e,
-              ),
-            )
-            .toList(),
+        tabs: tabList.map((e) => Tab(text: e)).toList(),
       ),
     );
   }
 }
 
 class TodoListWidget extends StatelessWidget {
-  final List<Task> taskList;
+  final List<TodoListUIModel> taskList;
 
   const TodoListWidget({
     super.key,
     required this.taskList,
   });
 
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      primary: false,
+      padding: const EdgeInsets.symmetric(
+        vertical: 16,
+      ),
+      shrinkWrap: true,
+      itemBuilder: (BuildContext context, int index) {
+        final TodoListUIModel uiModel = taskList[index];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TodoListHeaderSection(uiModel: uiModel),
+            Builder(builder: (context) {
+              if (taskList.isEmpty == true) {
+                return const Center(
+                  child: Text("No task"),
+                );
+              }
+              return TodoListChildSection(
+                uiModel: uiModel,
+              );
+            })
+          ],
+        );
+      },
+      itemCount: taskList.length,
+    );
+  }
+}
+
+class TodoListHeaderSection extends StatelessWidget {
+  final TodoListUIModel uiModel;
+
+  const TodoListHeaderSection({
+    super.key,
+    required this.uiModel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      dense: true,
+      isThreeLine: false,
+      title: Text(
+        uiModel.title,
+        style: Theme.of(context)
+            .textTheme
+            .titleLarge
+            ?.copyWith(fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+}
+
+class TodoListChildSection extends StatelessWidget {
+  final TodoListUIModel uiModel;
+
+  const TodoListChildSection({
+    super.key,
+    required this.uiModel,
+  });
+
   Future showConfirmationToDeleteTaskDialog({
     required BuildContext context,
-    required Task item,
+    required MyTask item,
   }) async {
     return await showDialog(
         context: context,
@@ -139,7 +197,7 @@ class TodoListWidget extends StatelessWidget {
           return ConfirmationToDeleteDialog(
             onDialogClickListener: (deleted) {
               if (deleted) {
-                context.read<TodoListPageCubit>().deleteTask(task: item);
+                // context.read<TodoListPageCubit>().deleteTask(task: item);
               }
               Navigator.of(context).pop();
             },
@@ -149,22 +207,16 @@ class TodoListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (taskList.isEmpty == true) {
-      return const Center(
-        child: Text("No task"),
-      );
-    }
-
     return ListView.separated(
       primary: false,
       padding: const EdgeInsets.symmetric(
-        vertical: 16,
+        vertical: 4,
       ),
       shrinkWrap: true,
       key: const Key("ListTodoWidget"),
       itemBuilder: (BuildContext context, int index) {
         final SwipeActionController controller = SwipeActionController();
-        final Task task = taskList[index];
+        final MyTask task = uiModel.taskList[index];
         return SwipeActionCell(
           controller: controller,
           key: ObjectKey(index.toString()),
@@ -201,15 +253,15 @@ class TodoListWidget extends StatelessWidget {
         );
       },
       separatorBuilder: (BuildContext context, int index) => const Divider(
-        height: 0,
+        height: 1,
       ),
-      itemCount: taskList.length,
+      itemCount: uiModel.taskList.length,
     );
   }
 }
 
 class ItemTodoListWidget extends StatelessWidget {
-  final Task item;
+  final MyTask item;
   final Function onDeleteTaskClickListener;
 
   const ItemTodoListWidget({
@@ -222,18 +274,22 @@ class ItemTodoListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onLongPress: () => onDeleteTaskClickListener.call(),
+      leading: const Icon(
+        Icons.today_outlined,
+      ),
       title: Text(
         item.title.toString(),
         style: Theme.of(context).textTheme.titleMedium,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: item.description?.isEmpty == true
+      subtitle: item.description.isEmpty == true
           ? null
           : Text(
               item.description.toString(),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.black45,
-                  ),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  ?.copyWith(color: Colors.black45),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

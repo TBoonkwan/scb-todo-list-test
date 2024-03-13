@@ -14,9 +14,8 @@ class RemoteTodoListDataSource extends TodoListDataSource {
   @override
   Future<bool> deleteTodoList({
     required List<Task> task,
-  }) {
-    // TODO: implement deleteTodoList
-    throw UnimplementedError();
+  }) async {
+    return Future.value(true);
   }
 
   @override
