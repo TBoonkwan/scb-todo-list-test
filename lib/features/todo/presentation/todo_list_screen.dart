@@ -19,11 +19,21 @@ class TodoListScreen extends StatefulWidget {
 
 class _TodoListScreenState extends BasePage<TodoListScreen> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TodoListPageCubit>().getTodoList();
+    });
+  }
+
+  @override
+  void dispose() {
+    context.read<TodoListPageCubit>().reset();
+    super.dispose();
+  }
+
+  @override
   Widget child(BuildContext context) {
-    final TodoListPageCubit cubit = context.read<TodoListPageCubit>();
-
-    cubit.getTodoList();
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,

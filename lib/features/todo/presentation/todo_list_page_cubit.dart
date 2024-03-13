@@ -45,4 +45,8 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
       taskList: newTaskList,
     ));
   }
+
+  void reset(){
+    emit(const TodoListPageState());
+  }
 }

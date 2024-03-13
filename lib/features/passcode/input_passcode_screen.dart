@@ -28,9 +28,9 @@ class InputPasscodeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final dynamic arguments = ModalRoute.of(context)?.settings.arguments;
 
-    if (arguments!=null && arguments is InputScreenConfig) {
+    if (arguments != null && arguments is InputScreenConfig) {
       _inputScreenConfig = arguments;
-    }else{
+    } else {
       _inputScreenConfig = InputScreenConfig();
     }
 
@@ -46,10 +46,13 @@ class InputPasscodeScreen extends StatelessWidget {
             didMaxRetries: (time) {},
             didConfirmed: (passcode) {},
             didUnlocked: () {
-              // if password is correct
-              Navigator.of(context).popAndPushNamed(
-                TodoListRoute.todoListScreen,
-              );
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                Navigator.of(context).popAndPushNamed(
+                  TodoListRoute.todoListScreen,
+                );
+              }
             },
             title: Text(
               "Please enter your PIN",
@@ -130,7 +133,6 @@ class InputPasscodeScreen extends StatelessWidget {
               }
 
               return const SizedBox();
-
             }),
           )
         ],
