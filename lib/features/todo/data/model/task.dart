@@ -9,6 +9,11 @@ Task taskFromJson(String str) => Task.fromJson(json.decode(str));
 String taskToJson(Task data) => json.encode(data.toJson());
 
 class Task {
+  String? id;
+  String? title;
+  String? description;
+  String? status;
+
   Task({
     this.id,
     this.title,
@@ -22,25 +27,6 @@ class Task {
     description = json['description'];
     status = json['status'];
   }
-
-  num? id;
-
-  String? title;
-  String? description;
-  num? status;
-
-  Task copyWith({
-    num? id,
-    String? title,
-    String? description,
-    num? status,
-  }) =>
-      Task(
-        id: id ?? this.id,
-        title: title ?? this.title,
-        description: description ?? this.description,
-        status: status ?? this.status,
-      );
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

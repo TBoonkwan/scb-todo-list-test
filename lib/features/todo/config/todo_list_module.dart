@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:scb_test/core/configuration/app_config.dart';
 import 'package:scb_test/core/module/app_module.dart';
 import 'package:scb_test/di/app_module.dart';
@@ -17,7 +18,7 @@ class TodoListModule extends BaseModule {
 
     moduleProvider.registerFactory<TodoListDataSource>(
       instanceName: AppConstants.prodEnv,
-      () => RemoteTodoListDataSource(),
+      () => RemoteTodoListDataSource(dio: moduleProvider.get<Dio>()),
     );
 
     moduleProvider.registerFactory<ITodoListRepository>(

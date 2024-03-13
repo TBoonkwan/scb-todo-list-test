@@ -17,12 +17,17 @@ class InputScreenConfig {
   });
 }
 
-class InputPasscodeScreen extends StatelessWidget {
-  InputScreenConfig? _inputScreenConfig;
-
-  InputPasscodeScreen({
+class InputPasscodeScreen extends StatefulWidget {
+  const InputPasscodeScreen({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<InputPasscodeScreen> createState() => _InputPasscodeScreenState();
+}
+
+class _InputPasscodeScreenState extends State<InputPasscodeScreen> {
+  InputScreenConfig? _inputScreenConfig;
 
   @override
   Widget build(BuildContext context) {
@@ -112,31 +117,42 @@ class InputPasscodeScreen extends StatelessWidget {
             ),
             canCancel: false,
           ),
-          Positioned(
-            top: 56,
-            right: 24,
-            child: Builder(builder: (context) {
+          Builder(
+            builder: (BuildContext context) {
               if (_inputScreenConfig?.shouldShowCloseIcon == true) {
-                return IconButton(
-                  onPressed: () {
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
-                    } else {
-                      exit(0);
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.close,
-                    color: Colors.white,
-                  ),
-                );
+                return _CloseButton();
+              } else {
+                return const SizedBox();
               }
-
-              return const SizedBox();
-            }),
+            },
           )
         ],
       ),
+    );
+  }
+}
+
+class _CloseButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 56,
+      right: 24,
+      child: Builder(builder: (context) {
+        return IconButton(
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              exit(0);
+            }
+          },
+          icon: const Icon(
+            Icons.close,
+            color: Colors.white,
+          ),
+        );
+      }),
     );
   }
 }

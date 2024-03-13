@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:scb_test/features/base/base_page.dart';
-import 'package:scb_test/features/base/base_page_state.dart';
 import 'package:scb_test/features/todo/data/model/task.dart';
 import 'package:scb_test/features/todo/presentation/todo_list_page_cubit.dart';
 import 'package:scb_test/features/todo/presentation/todo_list_page_state.dart';
@@ -18,6 +17,14 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends BasePage<TodoListScreen> {
+  String selectedTab = "Todo";
+
+  List<String> tabList = [
+    "Todo",
+    "Doing",
+    "Done",
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -35,28 +42,71 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
   @override
   Widget child(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text(
-          "Todo List",
-          style: TextStyle(
-            color: Colors.white,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(36),
+              bottomRight: Radius.circular(36),
+            )),
+            toolbarHeight: 56,
+            pinned: true,
+            bottom: PreferredSize(
+              preferredSize: const Size(double.infinity, 56),
+              child: TodoFilterStatusTab(
+                tabList: tabList,
+              ),
+            ),
           ),
-        ),
-      ),
-      body: BlocBuilder<TodoListPageCubit, TodoListPageState>(
-        builder: (
-            BuildContext context,
-            TodoListPageState state,
-            ) {
-          if (state.eventState == TodoListPageEventState.loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+          SliverList(
+              delegate: SliverChildListDelegate([
+            BlocBuilder<TodoListPageCubit, TodoListPageState>(
+              builder: (
+                BuildContext context,
+                TodoListPageState state,
+              ) {
+                if (state.eventState == TodoListPageEventState.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          return TodoListWidget(
-            taskList: state.taskList,
-          );
-        },
+                return TodoListWidget(
+                  taskList: state.taskList,
+                );
+              },
+            ),
+          ]))
+        ],
+      ),
+    );
+  }
+}
+
+class TodoFilterStatusTab extends StatelessWidget {
+  final List<String> tabList;
+
+  const TodoFilterStatusTab({
+    super.key,
+    required this.tabList,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: tabList.length,
+      animationDuration: const Duration(milliseconds: 500),
+      child: TabBar(
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.white38,
+        indicatorColor: Colors.transparent,
+        tabs: tabList
+            .map(
+              (e) => Tab(
+                text: e,
+              ),
+            )
+            .toList(),
       ),
     );
   }
@@ -97,6 +147,9 @@ class TodoListWidget extends StatelessWidget {
     }
 
     return ListView.separated(
+      primary: false,
+      padding: const EdgeInsets.all(0),
+      shrinkWrap: true,
       key: const Key("ListTodoWidget"),
       itemBuilder: (BuildContext context, int index) {
         final SwipeActionController controller = SwipeActionController();
@@ -158,8 +211,12 @@ class ItemTodoListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onLongPress: () => onDeleteTaskClickListener.call(),
-      title: Text(item.title.toString(),),
-      subtitle: item.description?.isEmpty == true ? null : Text(item.description.toString()),
+      title: Text(
+        item.title.toString(),
+      ),
+      subtitle: item.description?.isEmpty == true
+          ? null
+          : Text(item.description.toString()),
     );
   }
 }

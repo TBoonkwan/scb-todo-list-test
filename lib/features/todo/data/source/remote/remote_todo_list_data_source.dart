@@ -1,15 +1,15 @@
+import 'package:dio/dio.dart';
 import 'package:scb_test/features/todo/data/model/task.dart';
-import 'package:scb_test/features/todo/data/model/task_todo_list_model.dart';
+import 'package:scb_test/features/todo/data/model/todo_list_request.dart';
+import 'package:scb_test/features/todo/data/model/todo_list_response.dart';
 import 'package:scb_test/features/todo/data/source/todo_list_data_source.dart';
 
 class RemoteTodoListDataSource extends TodoListDataSource {
-  @override
-  Future<bool> createTodoList({
-    required Task task,
-  }) {
-    // TODO: implement createTodoList
-    throw UnimplementedError();
-  }
+  final Dio dio;
+
+  RemoteTodoListDataSource({
+    required this.dio,
+  });
 
   @override
   Future<bool> deleteTodoList({
@@ -20,14 +20,13 @@ class RemoteTodoListDataSource extends TodoListDataSource {
   }
 
   @override
-  Future<TaskTodoListModel> getTodoList() {
-    // TODO: implement getAllTodoList
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> updateTaskStatus({required List<Task> task}) {
-    // TODO: implement updateTaskStatus
-    throw UnimplementedError();
+  Future<TodoListResponse> getTodoList({
+    required TodoListRequest request,
+  }) async {
+    var response = await dio.get(
+      "todo-list",
+      queryParameters: request.toJson(),
+    );
+    return TodoListResponse.fromJson(response.data);
   }
 }

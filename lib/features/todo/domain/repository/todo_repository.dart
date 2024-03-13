@@ -1,18 +1,13 @@
 import 'package:scb_test/features/todo/data/model/task.dart';
-import 'package:scb_test/features/todo/data/model/task_todo_list_model.dart';
+import 'package:scb_test/features/todo/data/model/todo_list_response.dart';
+import 'package:scb_test/features/todo/data/model/todo_list_request.dart';
 
 abstract class ITodoListRepository {
-  Future<TaskTodoListModel> getTodoList();
-
-  Future<bool> createTodoList({
-    required Task task,
+  Future<TodoListResponse> getTodoList({
+    required TodoListRequest request,
   });
 
   Future<bool> deleteTodoList({
-    required List<Task> task,
-  });
-
-  Future<bool> updateTaskStatus({
     required List<Task> task,
   });
 }

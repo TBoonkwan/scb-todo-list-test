@@ -4,6 +4,6 @@ class InputPasscodeRoute {
   static String inputPasscodeScreen = '/InputPasscodeScreen';
 
   static final screens = {
-    inputPasscodeScreen: (context) => InputPasscodeScreen(),
+    inputPasscodeScreen: (context) => const InputPasscodeScreen(),
   };
 }
