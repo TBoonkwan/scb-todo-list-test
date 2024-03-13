@@ -5,7 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:scb_test/core/provider/app_provider.dart';
 import 'package:scb_test/core/route/app_route.dart';
 import 'package:scb_test/di/app_module.dart';
-import 'package:scb_test/features/todo/config/todo_list_route.dart';
+import 'package:scb_test/features/passcode/config/input_passcode_route.dart';
 import 'package:scb_test/theme/color/app_color.dart';
 
 void main() async {
@@ -71,9 +71,8 @@ class _SplashScerenState extends State<SplashSceren> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Get.to(TodoListScreen());
-      Navigator.of(context).pushNamed(
-        TodoListRoute.todoListScreen,
+      Navigator.of(context).popAndPushNamed(
+        InputPasscodeRoute.inputPasscodeScreen,
       );
     });
   }

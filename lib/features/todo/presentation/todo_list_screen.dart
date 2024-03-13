@@ -22,12 +22,15 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
     cubit.getTodoList();
 
-    print("_TodoListScreenState : build");
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text("Todo List"),
+        title: const Text(
+          "Todo List",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
       ),
       body: BlocBuilder<TodoListPageCubit, TodoListPageState>(
         builder: (
@@ -40,9 +43,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
           return TodoListWidget(
             taskList: state.taskList,
-            onDeleteTaskClickListener: (Task task) {
-              cubit.deleteTask(task: task);
-            },
           );
         },
       ),
@@ -52,12 +52,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
 class TodoListWidget extends StatelessWidget {
   final List<Task> taskList;
-  final Function(Task) onDeleteTaskClickListener;
 
   const TodoListWidget({
     super.key,
     required this.taskList,
-    required this.onDeleteTaskClickListener,
   });
 
   Future showConfirmationToDeleteTaskDialog({
@@ -70,7 +68,7 @@ class TodoListWidget extends StatelessWidget {
           return ConfirmationToDeleteDialog(
             onDialogClickListener: (deleted) {
               if (deleted) {
-                onDeleteTaskClickListener.call(item);
+                context.read<TodoListPageCubit>().deleteTask(task: item);
               }
               Navigator.of(context).pop();
             },
@@ -148,12 +146,8 @@ class ItemTodoListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onLongPress: () => onDeleteTaskClickListener.call(),
-      title: Text(
-        item.title.toString(),
-      ),
-      subtitle: item.description?.isEmpty == true
-          ? null
-          : Text(item.description.toString()),
+      title: Text(item.title.toString(),),
+      subtitle: item.description?.isEmpty == true ? null : Text(item.description.toString()),
     );
   }
 }
