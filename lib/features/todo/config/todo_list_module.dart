@@ -1,3 +1,4 @@
+import 'package:scb_test/core/configuration/app_config.dart';
 import 'package:scb_test/core/module/app_module.dart';
 import 'package:scb_test/di/app_module.dart';
 import 'package:scb_test/features/todo/data/repository/todo_repository.dart';
@@ -10,19 +11,19 @@ class TodoListModule extends BaseModule {
   @override
   void provideModule() {
     moduleProvider.registerFactory<TodoListDataSource>(
-      instanceName: "mock",
+      instanceName: AppConstants.mockEnv,
       () => MockTodoListDataSource(),
     );
 
     moduleProvider.registerFactory<TodoListDataSource>(
-      instanceName: "prod",
+      instanceName: AppConstants.prodEnv,
       () => RemoteTodoListDataSource(),
     );
 
     moduleProvider.registerFactory<ITodoListRepository>(
       () => TodoListRepository(
-        dataSource: moduleProvider.get<TodoListDataSource>(instanceName: "mock")
-      ),
+          dataSource: moduleProvider.get<TodoListDataSource>(
+              instanceName: AppConfig.getEnvironmentInstanceName())),
     );
   }
 }
