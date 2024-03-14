@@ -8,19 +8,35 @@ import 'package:scb_test/features/passcode/input_passcode_screen.dart';
 abstract class BasePage<T extends StatefulWidget> extends State<T> {
   BasePageCubit? basePageCubit;
 
+  AppLifecycleListener? _listener;
+
   Widget child(BuildContext context);
 
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       basePageCubit = context.read<BasePageCubit>()..startTimer();
     });
+
+    _listener = AppLifecycleListener(
+      onResume: () {
+        basePageCubit?.reset();
+        basePageCubit?.startTimer();
+      },
+      onStateChange: (state){
+        if (state == AppLifecycleState.inactive) {
+          basePageCubit?.reset();
+          basePageCubit?.updateLatestActive();
+        }
+      }
+    );
   }
 
   @override
   void dispose() {
-    basePageCubit?.updateLatestActive();
+    _listener?.dispose();
     basePageCubit?.reset();
     super.dispose();
   }

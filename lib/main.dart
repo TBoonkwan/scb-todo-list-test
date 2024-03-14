@@ -5,9 +5,10 @@ import 'package:get_storage/get_storage.dart';
 import 'package:scb_test/core/provider/app_provider.dart';
 import 'package:scb_test/core/route/app_route.dart';
 import 'package:scb_test/di/app_module.dart';
-import 'package:scb_test/features/base/base_page_cubit.dart';
-import 'package:scb_test/features/base/base_page_state.dart';
+import 'package:scb_test/features/base/base_page.dart';
+import 'package:scb_test/features/base/data/base_constants.dart';
 import 'package:scb_test/features/passcode/config/input_passcode_route.dart';
+import 'package:scb_test/features/splash/splash_screen.dart';
 import 'package:scb_test/features/todo/config/todo_list_route.dart';
 import 'package:scb_test/theme/color/app_color.dart';
 
@@ -20,7 +21,7 @@ void main() async {
 
   await AppModule().provideModule();
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -58,34 +59,14 @@ class _MyAppState extends State<MyApp> {
             brightness: Brightness.light,
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColor.primaryColor)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColor.primaryColor,
+            ),
+          ),
           useMaterial3: true,
         ),
-        home: SplashScreen(),
+        home: const SplashScreen(),
       ),
     );
-  }
-}
-
-class SplashScreen extends StatefulWidget {
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.of(context).popAndPushNamed(
-        InputPasscodeRoute.inputPasscodeScreen,
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold();
   }
 }
