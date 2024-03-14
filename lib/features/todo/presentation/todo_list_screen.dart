@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:scb_test/features/base/base_page.dart';
 import 'package:scb_test/features/todo/data/constants/todo_list_constants.dart';
 import 'package:scb_test/features/todo/domain/entity/todo_list_ui_model.dart';
+import 'package:scb_test/features/todo/presentation/components/todo_list_filter_status_tab.dart';
+import 'package:scb_test/features/todo/presentation/components/todo_list_task_header.dart';
+import 'package:scb_test/features/todo/presentation/components/todo_list_task_list_section.dart';
 import 'package:scb_test/features/todo/presentation/todo_list_page_cubit.dart';
 import 'package:scb_test/features/todo/presentation/todo_list_page_state.dart';
-import 'package:scb_test/shared/dialog/confirmation_to_delete_dialog.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({
@@ -42,84 +43,84 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
 
   @override
   Widget child(BuildContext context) {
+
+    final TodoListPageCubit cubit = context.read<TodoListPageCubit>();
+
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            automaticallyImplyLeading: false,
-            actions: [
-              IconButton(
-                icon: const CircleAvatar(
-                  child: Icon(
-                    Icons.account_circle,
-                  ),
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (scrollNotification) {
+          if (scrollNotification.metrics.pixels ==
+              scrollNotification.metrics.maxScrollExtent) {
+            cubit.loadMoreItem();
+          }
+          return true;
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              automaticallyImplyLeading: false,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(36),
+                  bottomRight: Radius.circular(36),
                 ),
-                onPressed: () {},
               ),
-              const SizedBox(
-                width: 16,
-              ),
-            ],
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(36),
-                bottomRight: Radius.circular(36),
-              ),
-            ),
-            toolbarHeight: 56,
-            pinned: true,
-            bottom: PreferredSize(
-              preferredSize: const Size(double.infinity, 56),
-              child: TodoFilterStatusTab(
-                tabList: tabList,
-                tabSelected: (status) {
-                  context.read<TodoListPageCubit>().getTodoList(status: status);
-                },
+              toolbarHeight: 56,
+              pinned: true,
+              bottom: PreferredSize(
+                preferredSize: const Size(double.infinity, 56),
+                child: TodoListFilterStatusTab(
+                  tabList: tabList,
+                  tabSelected: (status) {
+                    context
+                        .read<TodoListPageCubit>()
+                        .getTodoList(status: status);
+                  },
+                ),
               ),
             ),
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              BlocBuilder<TodoListPageCubit, TodoListPageState>(
-                builder: (BuildContext context, TodoListPageState state) {
-                  if (state.eventState == TodoListPageEventState.initial) {
-                    return SizedBox(
-                      width: MediaQuery.sizeOf(context).width,
-                      height: MediaQuery.sizeOf(context).height * 0.7,
-                      child: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
+            SliverList(
+              delegate: SliverChildListDelegate([
+                BlocBuilder<TodoListPageCubit, TodoListPageState>(
+                  builder: (BuildContext context, TodoListPageState state) {
+                    if (state.eventState == TodoListPageEventState.initial) {
+                      return Loading(
+                        size: Size(
+                          MediaQuery.sizeOf(context).width,
+                          MediaQuery.sizeOf(context).height * 0.7,
+                        ),
+                      );
+                    }
 
-                  if (state.taskList.isEmpty == true) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: Center(
-                        child: Text("No task"),
-                      ),
-                    );
-                  }
-
-                  return TodoListWidget(
-                    taskList: state.taskList,
-                  );
-                },
-              ),
-            ]),
-          )
-        ],
+                    if (state.eventState == TodoListPageEventState.noTask) {
+                      return SizedBox(
+                        width: MediaQuery.sizeOf(context).width,
+                        height: MediaQuery.sizeOf(context).height * 0.7,
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          child: Center(
+                            child: Text("No task"),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return TodoListContent(
+                        taskList: state.taskList,
+                      );
+                    }
+                  },
+                ),
+              ]),
+            )
+          ],
+        ),
       ),
       bottomNavigationBar: BlocConsumer<TodoListPageCubit, TodoListPageState>(
         listenWhen: (prev, current) => current.eventState != prev.eventState,
         listener: (context, state) async {},
         builder: (context, state) {
           if (state.eventState == TodoListPageEventState.loadMore) {
-            return const SizedBox(
-              height: 80,
-              width: 80,
-              child: Center(child: CircularProgressIndicator()),
-            );
+            return const Loading(size: Size(80, 80));
           }
 
           return const SizedBox(
@@ -131,38 +132,30 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
   }
 }
 
-class TodoFilterStatusTab extends StatelessWidget {
-  final List<String> tabList;
-  final Function(String) tabSelected;
+class Loading extends StatelessWidget {
+  final Size size;
 
-  const TodoFilterStatusTab({
+  const Loading({
     super.key,
-    required this.tabList,
-    required this.tabSelected,
+    required this.size,
   });
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: tabList.length,
-      animationDuration: const Duration(milliseconds: 500),
-      child: TabBar(
-        onTap: (index) {
-          tabSelected.call(tabList[index]);
-        },
-        labelColor: Colors.white,
-        unselectedLabelColor: Colors.white38,
-        indicatorColor: Colors.transparent,
-        tabs: tabList.map((e) => Tab(text: e)).toList(),
+    return SizedBox(
+      width: size.width,
+      height: size.height,
+      child: const Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }
 }
 
-class TodoListWidget extends StatelessWidget {
+class TodoListContent extends StatelessWidget {
   final List<TodoListUIModel> taskList;
 
-  const TodoListWidget({
+  const TodoListContent({
     super.key,
     required this.taskList,
   });
@@ -178,7 +171,6 @@ class TodoListWidget extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         final TodoListUIModel uiModel = taskList[index];
         return Builder(builder: (context) {
-
           if (uiModel.taskList.isEmpty == true) {
             return const SizedBox();
           }
@@ -186,8 +178,8 @@ class TodoListWidget extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TodoListHeaderSection(uiModel: uiModel),
-              TodoListChildSection(
+              TodoListTaskHeader(uiModel: uiModel),
+              TodoListTaskListSection(
                 uiModel: uiModel,
               )
             ],
@@ -195,153 +187,6 @@ class TodoListWidget extends StatelessWidget {
         });
       },
       itemCount: taskList.length,
-    );
-  }
-}
-
-class TodoListHeaderSection extends StatelessWidget {
-  final TodoListUIModel uiModel;
-
-  const TodoListHeaderSection({
-    super.key,
-    required this.uiModel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      dense: true,
-      isThreeLine: false,
-      title: Text(
-        uiModel.title,
-        style: Theme.of(context)
-            .textTheme
-            .titleLarge
-            ?.copyWith(fontWeight: FontWeight.w600),
-      ),
-    );
-  }
-}
-
-class TodoListChildSection extends StatelessWidget {
-  final TodoListUIModel uiModel;
-
-  const TodoListChildSection({
-    super.key,
-    required this.uiModel,
-  });
-
-  Future showConfirmationToDeleteTaskDialog({
-    required BuildContext context,
-    required TodoListUIModel uiModel,
-    required MyTask item,
-  }) async {
-    return await showDialog(
-        context: context,
-        builder: (context) {
-          return ConfirmationToDeleteDialog(
-            onDialogClickListener: (deleted) {
-              if (deleted) {
-                context
-                    .read<TodoListPageCubit>()
-                    .deleteTask(uiModel: uiModel, task: item);
-              }
-              Navigator.of(context).pop();
-            },
-          );
-        });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      primary: false,
-      padding: const EdgeInsets.symmetric(
-        vertical: 4,
-      ),
-      shrinkWrap: true,
-      key: const Key("ListTodoWidget"),
-      itemBuilder: (BuildContext context, int index) {
-        final SwipeActionController controller = SwipeActionController();
-        final MyTask task = uiModel.taskList[index];
-        return SwipeActionCell(
-          controller: controller,
-          key: ObjectKey(index.toString()),
-          isDraggable: true,
-          trailingActions: [
-            SwipeAction(
-              color: Colors.red,
-              onTap: (handler) async {
-                await showConfirmationToDeleteTaskDialog(
-                  context: context,
-                  uiModel: uiModel,
-                  item: task,
-                );
-                controller.closeAllOpenCell();
-              },
-              content: const SizedBox(
-                width: 80,
-                height: double.infinity,
-                child: Icon(
-                  Icons.delete,
-                ),
-              ),
-            ),
-          ],
-          child: ItemTodoListWidget(
-            key: Key(index.toString()),
-            item: task,
-            onDeleteTaskClickListener: () {
-              showConfirmationToDeleteTaskDialog(
-                context: context,
-                uiModel: uiModel,
-                item: task,
-              );
-            },
-          ),
-        );
-      },
-      separatorBuilder: (BuildContext context, int index) => const Divider(
-        height: 1,
-      ),
-      itemCount: uiModel.taskList.length,
-    );
-  }
-}
-
-class ItemTodoListWidget extends StatelessWidget {
-  final MyTask item;
-  final Function onDeleteTaskClickListener;
-
-  const ItemTodoListWidget({
-    super.key,
-    required this.item,
-    required this.onDeleteTaskClickListener,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      onLongPress: () => onDeleteTaskClickListener.call(),
-      leading: const Icon(
-        Icons.today_outlined,
-      ),
-      title: Text(
-        item.title.toString(),
-        style: Theme.of(context).textTheme.titleMedium,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: item.description.isEmpty == true
-          ? null
-          : Text(
-              item.description.toString(),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge
-                  ?.copyWith(color: Colors.black45),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
     );
   }
 }

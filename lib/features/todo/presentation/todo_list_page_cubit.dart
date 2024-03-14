@@ -30,12 +30,21 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
       ),
     );
 
-    emit(
-      state.copyWith(
-        taskList: uiModel,
-        eventState: TodoListPageEventState.loaded,
-      ),
-    );
+    if (uiModel.isEmpty == true) {
+      emit(
+        state.copyWith(
+          eventState: TodoListPageEventState.noTask,
+          taskList: [],
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          eventState: TodoListPageEventState.update,
+          taskList: uiModel,
+        ),
+      );
+    }
   }
 
   void deleteTask({
@@ -46,14 +55,24 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
 
     emit(
       state.copyWith(
-        eventState: TodoListPageEventState.deleted,
+        eventState: TodoListPageEventState.update,
         taskList: state.taskList,
       ),
     );
 
     emit(
       state.copyWith(
-        eventState: TodoListPageEventState.loaded,
+        eventState: TodoListPageEventState.none,
+      ),
+    );
+  }
+
+  void loadMoreItem() {
+
+
+    emit(
+      state.copyWith(
+        eventState: TodoListPageEventState.loadMore,
       ),
     );
   }
