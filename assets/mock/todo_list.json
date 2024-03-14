@@ -1,118 +1,20 @@
 {
   "tasks": [
     {
-      "id": "1",
-      "title": "Title #1",
-      "description": "Description #1",
-      "createdAt": "2023-03-25T09:00:00Z",
+      "id": "cbb0732a-c9ab-4855-b66f-786cd41a3cd1",
+      "title": "Read a book",
+      "description": "Spend an hour reading a book for pleasure",
+      "createdAt": "2023-03-24T19:30:00Z",
       "status": "TODO"
     },
     {
-      "id": "2",
-      "title": "Title #2",
-      "description": "Description #2",
+      "id": "119a8c45-3f3d-41da-88bb-423c5367b81a",
+      "title": "Exercise",
+      "description": "Go for a run or do a workout at home",
       "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DOING"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
-    },
-    {
-      "id": "3",
-      "title": "Title #3",
-      "description": "Description #3",
-      "createdAt": "2023-03-25T09:00:00Z",
-      "status": "DONE"
+      "status": "TODO"
     }
   ],
   "pageNumber": 0,
-  "totalPages": 16
+  "totalPages": 0
 }

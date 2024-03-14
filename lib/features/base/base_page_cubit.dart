@@ -17,6 +17,7 @@ class BasePageCubit extends Cubit<BasePageState> {
     timer = Timer.periodic(
       maxTimeout,
       (Timer timer) {
+        updateLatestActive();
         emit(
           state.copyWith(eventState: BasePageEventState.timeout),
         );
@@ -36,4 +37,6 @@ class BasePageCubit extends Cubit<BasePageState> {
   void updateLatestActive() {
     storage.write(BaseConstants.latestActive, DateTime.now().toIso8601String());
   }
+
+  bool isTimeout() => state.eventState == BasePageEventState.timeout;
 }

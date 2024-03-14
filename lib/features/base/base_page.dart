@@ -20,18 +20,13 @@ abstract class BasePage<T extends StatefulWidget> extends State<T> {
       basePageCubit = context.read<BasePageCubit>()..startTimer();
     });
 
-    _listener = AppLifecycleListener(
-      onResume: () {
-        basePageCubit?.reset();
-        basePageCubit?.startTimer();
-      },
-      onStateChange: (state){
-        if (state == AppLifecycleState.inactive) {
-          basePageCubit?.reset();
-          basePageCubit?.updateLatestActive();
-        }
+    _listener = AppLifecycleListener(onResume: () {
+      basePageCubit?..reset()..startTimer();
+    }, onStateChange: (state) {
+      if (state == AppLifecycleState.inactive && basePageCubit?.isTimeout() == false) {
+        basePageCubit?..reset()..updateLatestActive();
       }
-    );
+    });
   }
 
   @override
@@ -45,8 +40,7 @@ abstract class BasePage<T extends StatefulWidget> extends State<T> {
   Widget build(BuildContext context) {
     return Listener(
       onPointerDown: (_) {
-        basePageCubit?.reset();
-        basePageCubit?.startTimer();
+        basePageCubit?..reset()..startTimer();
       },
       child: BlocListener<BasePageCubit, BasePageState>(
         listenWhen: (prev, current) => current.eventState != prev.eventState,
@@ -59,8 +53,7 @@ abstract class BasePage<T extends StatefulWidget> extends State<T> {
                   shouldShowCloseIcon: false,
                 ),
               );
-              basePageCubit?.reset();
-              basePageCubit?.startTimer();
+              basePageCubit?..reset()..startTimer();
               break;
             default:
           }
