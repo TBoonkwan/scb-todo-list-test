@@ -1,5 +1,4 @@
 import "package:equatable/equatable.dart";
-import "package:scb_test/features/todo/data/model/task.dart";
 import "package:scb_test/features/todo/domain/entity/todo_list_ui_model.dart";
 
 class TodoListPageState extends Equatable {
@@ -9,7 +8,7 @@ class TodoListPageState extends Equatable {
   final List<TodoListUIModel> taskList;
 
   const TodoListPageState({
-    this.eventState = TodoListPageEventState.loading,
+    this.eventState = TodoListPageEventState.none,
     this.actionState = TodoListPageActionState.none,
     this.taskList = const [],
   });
@@ -34,7 +33,7 @@ class TodoListPageState extends Equatable {
   }
 }
 
-enum TodoListPageEventState { loading, success }
+enum TodoListPageEventState { initial, deleted, loadMore, loaded, none }
 
 enum TodoListPageActionState {
   success,

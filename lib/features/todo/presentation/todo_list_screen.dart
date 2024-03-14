@@ -47,11 +47,25 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
         slivers: [
           SliverAppBar(
             automaticallyImplyLeading: false,
+            actions: [
+              IconButton(
+                icon: const CircleAvatar(
+                  child: Icon(
+                    Icons.account_circle,
+                  ),
+                ),
+                onPressed: () {},
+              ),
+              const SizedBox(
+                width: 16,
+              ),
+            ],
             shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(36),
-              bottomRight: Radius.circular(36),
-            )),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(36),
+                bottomRight: Radius.circular(36),
+              ),
+            ),
             toolbarHeight: 56,
             pinned: true,
             bottom: PreferredSize(
@@ -65,23 +79,53 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
             ),
           ),
           SliverList(
-              delegate: SliverChildListDelegate([
-            BlocBuilder<TodoListPageCubit, TodoListPageState>(
-              builder: (
-                BuildContext context,
-                TodoListPageState state,
-              ) {
-                if (state.eventState == TodoListPageEventState.loading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+            delegate: SliverChildListDelegate([
+              BlocBuilder<TodoListPageCubit, TodoListPageState>(
+                builder: (BuildContext context, TodoListPageState state) {
+                  if (state.eventState == TodoListPageEventState.initial) {
+                    return SizedBox(
+                      width: MediaQuery.sizeOf(context).width,
+                      height: MediaQuery.sizeOf(context).height * 0.7,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
 
-                return TodoListWidget(
-                  taskList: state.taskList,
-                );
-              },
-            ),
-          ]))
+                  if (state.taskList.isEmpty == true) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      child: Center(
+                        child: Text("No task"),
+                      ),
+                    );
+                  }
+
+                  return TodoListWidget(
+                    taskList: state.taskList,
+                  );
+                },
+              ),
+            ]),
+          )
         ],
+      ),
+      bottomNavigationBar: BlocConsumer<TodoListPageCubit, TodoListPageState>(
+        listenWhen: (prev, current) => current.eventState != prev.eventState,
+        listener: (context, state) async {},
+        builder: (context, state) {
+          if (state.eventState == TodoListPageEventState.loadMore) {
+            return const SizedBox(
+              height: 80,
+              width: 80,
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          return const SizedBox(
+            height: 0,
+          );
+        },
       ),
     );
   }
@@ -133,22 +177,22 @@ class TodoListWidget extends StatelessWidget {
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
         final TodoListUIModel uiModel = taskList[index];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TodoListHeaderSection(uiModel: uiModel),
-            Builder(builder: (context) {
-              if (taskList.isEmpty == true) {
-                return const Center(
-                  child: Text("No task"),
-                );
-              }
-              return TodoListChildSection(
+        return Builder(builder: (context) {
+
+          if (uiModel.taskList.isEmpty == true) {
+            return const SizedBox();
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TodoListHeaderSection(uiModel: uiModel),
+              TodoListChildSection(
                 uiModel: uiModel,
-              );
-            })
-          ],
-        );
+              )
+            ],
+          );
+        });
       },
       itemCount: taskList.length,
     );
@@ -189,6 +233,7 @@ class TodoListChildSection extends StatelessWidget {
 
   Future showConfirmationToDeleteTaskDialog({
     required BuildContext context,
+    required TodoListUIModel uiModel,
     required MyTask item,
   }) async {
     return await showDialog(
@@ -197,7 +242,9 @@ class TodoListChildSection extends StatelessWidget {
           return ConfirmationToDeleteDialog(
             onDialogClickListener: (deleted) {
               if (deleted) {
-                // context.read<TodoListPageCubit>().deleteTask(task: item);
+                context
+                    .read<TodoListPageCubit>()
+                    .deleteTask(uiModel: uiModel, task: item);
               }
               Navigator.of(context).pop();
             },
@@ -227,6 +274,7 @@ class TodoListChildSection extends StatelessWidget {
               onTap: (handler) async {
                 await showConfirmationToDeleteTaskDialog(
                   context: context,
+                  uiModel: uiModel,
                   item: task,
                 );
                 controller.closeAllOpenCell();
@@ -246,6 +294,7 @@ class TodoListChildSection extends StatelessWidget {
             onDeleteTaskClickListener: () {
               showConfirmationToDeleteTaskDialog(
                 context: context,
+                uiModel: uiModel,
                 item: task,
               );
             },

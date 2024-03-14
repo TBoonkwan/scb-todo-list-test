@@ -2,7 +2,7 @@ class TodoListUIModel {
   final String title;
   final List<MyTask> taskList;
 
-  TodoListUIModel({
+  const TodoListUIModel({
     required this.title,
     required this.taskList,
   });

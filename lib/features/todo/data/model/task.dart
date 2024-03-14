@@ -14,11 +14,14 @@ class Task {
   String? description;
   String? status;
 
+  String? createdAt;
+
   Task({
     this.id,
     this.title,
     this.description,
     this.status,
+    this.createdAt,
   });
 
   Task.fromJson(dynamic json) {
@@ -26,6 +29,7 @@ class Task {
     title = json['title'];
     description = json['description'];
     status = json['status'];
+    createdAt = json['createdAt'];
   }
 
   Map<String, dynamic> toJson() {
@@ -34,6 +38,7 @@ class Task {
     map['title'] = title;
     map['description'] = description;
     map['status'] = status;
+    map['createdAt'] = createdAt;
     return map;
   }
 }

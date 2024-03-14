@@ -1,6 +1,5 @@
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scb_test/features/todo/data/constants/todo_list_constants.dart";
-import "package:scb_test/features/todo/data/model/task.dart";
 import "package:scb_test/features/todo/data/model/todo_list_request.dart";
 import "package:scb_test/features/todo/domain/entity/todo_list_ui_model.dart";
 import "package:scb_test/features/todo/domain/usecase/get_todo_list_usecase.dart";
@@ -18,7 +17,7 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
     required String status,
   }) async {
     emit(
-      state.copyWith(eventState: TodoListPageEventState.loading),
+      state.copyWith(eventState: TodoListPageEventState.initial),
     );
 
     final uiModel = await getTodoListUseCase.getTodoList(
@@ -34,25 +33,29 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
     emit(
       state.copyWith(
         taskList: uiModel,
-        eventState: TodoListPageEventState.success,
+        eventState: TodoListPageEventState.loaded,
       ),
     );
   }
 
   void deleteTask({
+    required TodoListUIModel uiModel,
     required MyTask task,
   }) async {
-    // final List<Task> newTaskList = state.taskList + [];
-    //
-    // newTaskList.remove(task);
-    //
-    // emit(
-    //   state.copyWith(
-    //     taskList: newTaskList,
-    //   ),
-    // );
-    //
-    // await getTodoListUseCase.deleteTodoList(task: newTaskList);
+    uiModel.taskList.remove(task);
+
+    emit(
+      state.copyWith(
+        eventState: TodoListPageEventState.deleted,
+        taskList: state.taskList,
+      ),
+    );
+
+    emit(
+      state.copyWith(
+        eventState: TodoListPageEventState.loaded,
+      ),
+    );
   }
 
   void reset() {
