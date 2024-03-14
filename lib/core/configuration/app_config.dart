@@ -1,6 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class AppConstants {
+class ConfigConstants {
   static String flavor = 'flavor';
   static String endpoint = 'endpoint';
 
@@ -9,14 +9,14 @@ class AppConstants {
 }
 
 class AppConfig {
-  static bool isMockEnv = dotenv.get(AppConstants.flavor).toString() ==
-      AppConstants.mockEnv;
+  static bool isMockEnv =
+      dotenv.get(ConfigConstants.flavor).toString() == ConfigConstants.mockEnv;
 
   static String getEnvironmentInstanceName() {
     if (isMockEnv) {
-      return AppConstants.mockEnv;
+      return ConfigConstants.mockEnv;
     } else {
-      return AppConstants.prodEnv;
+      return ConfigConstants.prodEnv;
     }
   }
 }

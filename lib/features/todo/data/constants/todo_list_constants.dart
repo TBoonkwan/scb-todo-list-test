@@ -28,4 +28,3 @@ enum TodoListOrderBy {
 
   const TodoListOrderBy(this.value);
 }
-

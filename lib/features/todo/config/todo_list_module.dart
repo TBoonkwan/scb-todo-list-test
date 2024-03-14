@@ -14,12 +14,12 @@ class TodoListModule extends BaseModule {
   @override
   void provideModule() {
     moduleProvider.registerFactory<TodoListDataSource>(
-      instanceName: AppConstants.mockEnv,
+      instanceName: ConfigConstants.mockEnv,
       () => MockTodoListDataSource(),
     );
 
     moduleProvider.registerFactory<TodoListDataSource>(
-      instanceName: AppConstants.prodEnv,
+      instanceName: ConfigConstants.prodEnv,
       () => RemoteTodoListDataSource(dio: moduleProvider.get<Dio>()),
     );
 

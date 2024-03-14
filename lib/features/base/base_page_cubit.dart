@@ -2,8 +2,8 @@ import "dart:async";
 
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:get_storage/get_storage.dart";
+import "package:scb_test/core/constants/app_constants.dart";
 import "package:scb_test/features/base/base_page_state.dart";
-import "package:scb_test/features/base/data/base_constants.dart";
 
 class BasePageCubit extends Cubit<BasePageState> {
   final storage = GetStorage();
@@ -35,7 +35,7 @@ class BasePageCubit extends Cubit<BasePageState> {
   }
 
   void updateLatestActive() {
-    storage.write(BaseConstants.latestActive, DateTime.now().toIso8601String());
+    storage.write(AppConstants.latestActive, DateTime.now().toIso8601String());
   }
 
   bool isTimeout() => state.eventState == BasePageEventState.timeout;

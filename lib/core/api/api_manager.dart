@@ -5,7 +5,7 @@ import 'package:scb_test/core/configuration/app_config.dart';
 class ApiManager {
   Dio initial() {
     BaseOptions options = BaseOptions(
-      baseUrl: dotenv.env[AppConstants.endpoint].toString(),
+      baseUrl: dotenv.env[ConfigConstants.endpoint].toString(),
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
     );

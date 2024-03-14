@@ -114,8 +114,6 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
         actionState: TodoListPageActionState.delete,
       ),
     );
-
-
   }
 
   void reset() {

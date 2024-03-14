@@ -53,7 +53,7 @@ Future<T>? screenLock<T>({
   Widget? deleteButton,
   Widget title = const HeadingTitle(text: 'Please enter passcode.'),
   Widget confirmTitle =
-  const HeadingTitle(text: 'Please enter confirm passcode.'),
+      const HeadingTitle(text: 'Please enter confirm passcode.'),
   InputState? inputController,
   bool withBlur = true,
 }) {
@@ -63,10 +63,10 @@ Future<T>? screenLock<T>({
       opaque: false,
       barrierColor: Colors.black.withOpacity(0.8),
       pageBuilder: (
-          BuildContext context,
-          Animation<double> animation,
-          Animation<double> secodaryAnimation,
-          ) {
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secodaryAnimation,
+      ) {
         animation.addStatusListener((status) {
           if (status == AnimationStatus.completed) {
             if (didOpened != null) {
@@ -97,11 +97,11 @@ Future<T>? screenLock<T>({
         );
       },
       transitionsBuilder: (
-          BuildContext context,
-          Animation<double> animation,
-          Animation<double> secondaryAnimation,
-          Widget child,
-          ) {
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        Widget child,
+      ) {
         return SlideTransition(
           position: Tween<Offset>(
             begin: const Offset(0.0, 2.4),

@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-
 import 'package:scb_test/shared/passcode/configurations/input_button_config.dart';
 import 'package:scb_test/shared/passcode/configurations/screen_lock_config.dart';
 import 'package:scb_test/shared/passcode/configurations/secrets_config.dart';
@@ -123,7 +122,7 @@ class _ScreenLockState extends State<ScreenLock> {
       widget.didUnlocked?.call();
       return;
     }
-    
+
     Navigator.pop(context);
   }
 

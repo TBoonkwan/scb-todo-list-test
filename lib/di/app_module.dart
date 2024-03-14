@@ -6,7 +6,6 @@ var moduleProvider = GetIt.instance;
 
 class AppModule {
   Future provideModule() async {
-
     moduleProvider.registerFactory(() => ApiManager().initial());
 
     TodoListModule().provideModule();

@@ -21,10 +21,10 @@ class SecretConfig {
 
   /// `build` override function
   final Widget Function(
-      BuildContext context, {
-      required bool enabled,
-      required SecretConfig config,
-      })? build;
+    BuildContext context, {
+    required bool enabled,
+    required SecretConfig config,
+  })? build;
 
   SecretConfig copyWith({
     double? width,
