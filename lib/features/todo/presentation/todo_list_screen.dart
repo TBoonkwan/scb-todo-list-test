@@ -8,6 +8,7 @@ import 'package:scb_test/features/todo/presentation/components/todo_list_task_he
 import 'package:scb_test/features/todo/presentation/components/todo_list_task_list_section.dart';
 import 'package:scb_test/features/todo/presentation/todo_list_page_cubit.dart';
 import 'package:scb_test/features/todo/presentation/todo_list_page_state.dart';
+import 'package:scb_test/shared/loading/loading_indicator.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({
@@ -43,7 +44,6 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
 
   @override
   Widget child(BuildContext context) {
-
     final TodoListPageCubit cubit = context.read<TodoListPageCubit>();
 
     return Scaffold(
@@ -72,19 +72,19 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
                 child: TodoListFilterStatusTab(
                   tabList: tabList,
                   tabSelected: (status) {
-                    context
-                        .read<TodoListPageCubit>()
-                        .initial(status: status);
+                    context.read<TodoListPageCubit>().initial(status: status);
                   },
                 ),
               ),
             ),
             SliverList(
               delegate: SliverChildListDelegate([
-                BlocBuilder<TodoListPageCubit, TodoListPageState>(
+                BlocConsumer<TodoListPageCubit, TodoListPageState>(
+                  listenWhen: (prev, current) => current.eventState != prev.eventState,
+                  listener: (context, state) async {},
                   builder: (BuildContext context, TodoListPageState state) {
                     if (state.eventState == TodoListPageEventState.initial) {
-                      return Loading(
+                      return LoadingIndicator(
                         size: Size(
                           MediaQuery.sizeOf(context).width,
                           MediaQuery.sizeOf(context).height * 0.7,
@@ -105,10 +105,13 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
                       );
                     }
 
-                    return TodoListContent(
-                      taskList: state.taskList,
-                    );
+                    if (state.eventState == TodoListPageEventState.update) {
+                      return TodoListContent(
+                        taskList: state.taskList,
+                      );
+                    }
 
+                    return const SizedBox();
                   },
                 ),
               ]),
@@ -120,34 +123,14 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
         listenWhen: (prev, current) => current.eventState != prev.eventState,
         listener: (context, state) async {},
         builder: (context, state) {
-          if (state.eventState == TodoListPageEventState.loadMore) {
-            return const Loading(size: Size(80, 80));
+          if (state.actionState == TodoListPageActionState.loadMore) {
+            return const LoadingIndicator(size: Size(80, 80));
           }
 
           return const SizedBox(
             height: 0,
           );
         },
-      ),
-    );
-  }
-}
-
-class Loading extends StatelessWidget {
-  final Size size;
-
-  const Loading({
-    super.key,
-    required this.size,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: const Center(
-        child: CircularProgressIndicator(),
       ),
     );
   }

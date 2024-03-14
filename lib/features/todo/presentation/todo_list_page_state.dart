@@ -33,9 +33,10 @@ class TodoListPageState extends Equatable {
   }
 }
 
-enum TodoListPageEventState { initial, noTask, update, loadMore, none }
+enum TodoListPageEventState { initial, noTask, update, none }
 
 enum TodoListPageActionState {
   delete,
+  loadMore,
   none,
 }

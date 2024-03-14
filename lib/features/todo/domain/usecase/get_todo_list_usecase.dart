@@ -1,3 +1,4 @@
+import 'package:scb_test/features/todo/data/model/task.dart';
 import 'package:scb_test/features/todo/data/model/todo_list_request.dart';
 import 'package:scb_test/features/todo/data/model/todo_list_response.dart';
 import 'package:scb_test/features/todo/domain/entity/todo_list_ui_model.dart';
@@ -6,6 +7,7 @@ import 'package:scb_test/features/todo/domain/repository/todo_repository.dart';
 
 abstract class IGetTodoListUseCase {
   Future<TodoListModel> getTodoList({
+    required List<Task> allTask,
     required TodoListRequest request,
   });
 }
@@ -21,9 +23,12 @@ class GetTodoListUseCase extends IGetTodoListUseCase {
 
   @override
   Future<TodoListModel> getTodoList({
+    required List<Task> allTask,
     required TodoListRequest request,
   }) async {
     final TodoListResponse response = await todoListRepository.getTodoList(request: request);
+    allTask.addAll(response.task ?? []);
+    response.task = allTask;
     final TodoListModel model = mapper.map(response: response);
     return model;
   }
