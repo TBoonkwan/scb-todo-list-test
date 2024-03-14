@@ -1,3 +1,15 @@
+class TodoListModel {
+  final num nextPage;
+  final num totalPage;
+  final List<TodoListUIModel> uiModel;
+
+  TodoListModel({
+    required this.nextPage,
+    required this.totalPage,
+    required this.uiModel,
+  });
+}
+
 class TodoListUIModel {
   final String title;
   final List<MyTask> taskList;

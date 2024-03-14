@@ -5,7 +5,7 @@ import 'package:scb_test/features/todo/data/model/todo_list_response.dart';
 import 'package:scb_test/features/todo/domain/entity/todo_list_ui_model.dart';
 
 class TodoListMapper {
-  List<TodoListUIModel> map({
+  TodoListModel map({
     required TodoListResponse response,
   }) {
     final DateTime now = DateTime.now();
@@ -24,7 +24,11 @@ class TodoListMapper {
       tomorrow: tomorrow,
     );
 
-    return uiModel;
+    return TodoListModel(
+      nextPage: response.pageNumber ?? 0,
+      totalPage: response.totalPages ?? 0,
+      uiModel: uiModel,
+    );
   }
 
   void setupNewCreatedDate(TodoListResponse response) {
@@ -43,7 +47,8 @@ class TodoListMapper {
     final List<TodoListUIModel> temp = [];
 
     taskListGroupByDate?.forEach((key, value) {
-      final DateTime convertStringToDate = DateTime.tryParse(key.toString()) ?? DateTime.now();
+      final DateTime convertStringToDate =
+          DateTime.tryParse(key.toString()) ?? DateTime.now();
       final DateTime createToday = DateTime(
         convertStringToDate.year,
         convertStringToDate.month,

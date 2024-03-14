@@ -31,7 +31,7 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context
           .read<TodoListPageCubit>()
-          .getTodoList(status: TodoListStatus.todo.value);
+          .initial(status: TodoListStatus.todo.value);
     });
   }
 
@@ -74,7 +74,7 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
                   tabSelected: (status) {
                     context
                         .read<TodoListPageCubit>()
-                        .getTodoList(status: status);
+                        .initial(status: status);
                   },
                 ),
               ),
@@ -103,11 +103,12 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
                           ),
                         ),
                       );
-                    } else {
-                      return TodoListContent(
-                        taskList: state.taskList,
-                      );
                     }
+
+                    return TodoListContent(
+                      taskList: state.taskList,
+                    );
+
                   },
                 ),
               ]),

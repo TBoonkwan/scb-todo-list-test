@@ -4,12 +4,18 @@ import 'task.dart';
 
 class TodoListResponse {
   List<Task>? task;
+  num? pageNumber;
+  num? totalPages;
 
   TodoListResponse({
     this.task,
+    this.pageNumber,
+    this.totalPages,
   });
 
   TodoListResponse.fromJson(dynamic json) {
+    pageNumber = json["pageNumber"];
+    totalPages = json["totalPages"];
     if (json['tasks'] != null) {
       task = [];
       json['tasks'].forEach((v) {
@@ -20,6 +26,8 @@ class TodoListResponse {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
+    map['pageNumber'] = pageNumber;
+    map['totalPages'] = totalPages;
     if (task != null) {
       map['task'] = task?.map((v) => v.toJson()).toList();
     }
