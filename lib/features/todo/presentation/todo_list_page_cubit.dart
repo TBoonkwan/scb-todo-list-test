@@ -68,7 +68,7 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
 
   Future loadMoreItem() async {
     if (nextPage == totalPage ||
-        state.eventState == TodoListPageActionState.loadMore) {
+        state.actionState == TodoListPageActionState.loadMore) {
       return;
     }
 
