@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scb_test/features/base/base_page_cubit.dart';
 import 'package:scb_test/features/base/base_page_state.dart';
-import 'package:scb_test/features/passcode/config/input_passcode_route.dart';
-import 'package:scb_test/features/passcode/input_passcode_screen.dart';
+import 'package:scb_test/features/passcode/config/passcode_route.dart';
+import 'package:scb_test/features/passcode/presentation/input_passcode/input_passcode_screen.dart';
 
 abstract class BasePage<T extends StatefulWidget> extends State<T> {
   BasePageCubit? basePageCubit;
@@ -21,10 +21,15 @@ abstract class BasePage<T extends StatefulWidget> extends State<T> {
     });
 
     _listener = AppLifecycleListener(onResume: () {
-      basePageCubit?..reset()..startTimer();
+      basePageCubit
+        ?..reset()
+        ..startTimer();
     }, onStateChange: (state) {
-      if (state == AppLifecycleState.inactive && basePageCubit?.isTimeout() == false) {
-        basePageCubit?..reset()..updateLatestActive();
+      if (state == AppLifecycleState.inactive &&
+          basePageCubit?.isTimeout() == false) {
+        basePageCubit
+          ?..reset()
+          ..updateLatestActive();
       }
     });
   }
@@ -40,7 +45,9 @@ abstract class BasePage<T extends StatefulWidget> extends State<T> {
   Widget build(BuildContext context) {
     return Listener(
       onPointerDown: (_) {
-        basePageCubit?..reset()..startTimer();
+        basePageCubit
+          ?..reset()
+          ..startTimer();
       },
       child: BlocListener<BasePageCubit, BasePageState>(
         listenWhen: (prev, current) => current.eventState != prev.eventState,
@@ -48,12 +55,15 @@ abstract class BasePage<T extends StatefulWidget> extends State<T> {
           switch (state.eventState) {
             case BasePageEventState.timeout:
               await Navigator.of(context).pushNamed(
-                InputPasscodeRoute.inputPasscodeScreen,
-                arguments: InputScreenConfig(
-                  shouldShowCloseIcon: false,
+                PasscodeRoute.inputPasscodeScreen,
+                arguments: InputPasscodeScreenConfig(
+                  canBackOrClose: false,
+                  title: 'Please enter your PIN',
                 ),
               );
-              basePageCubit?..reset()..startTimer();
+              basePageCubit
+                ?..reset()
+                ..startTimer();
               break;
             default:
           }

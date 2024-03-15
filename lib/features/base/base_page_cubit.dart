@@ -14,10 +14,10 @@ class BasePageCubit extends Cubit<BasePageState> {
   BasePageCubit() : super(const BasePageState());
 
   void startTimer() {
+    updateLatestActive();
     timer = Timer.periodic(
       maxTimeout,
       (Timer timer) {
-        updateLatestActive();
         emit(
           state.copyWith(eventState: BasePageEventState.timeout),
         );

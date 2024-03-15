@@ -119,4 +119,12 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
   void reset() {
     emit(const TodoListPageState());
   }
+
+  void navigateToVerifyPasscode() {
+    emit(state.copyWith(actionState: TodoListPageActionState.verifyPasscode));
+  }
+
+  void navigateToChangePasscode() {
+    emit(state.copyWith(actionState: TodoListPageActionState.changePasscode));
+  }
 }

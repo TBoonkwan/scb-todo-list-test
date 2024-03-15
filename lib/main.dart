@@ -30,12 +30,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: AppProvider().provider,
       child: MaterialApp(
         initialRoute: "/",
+        navigatorObservers: [
+          routeObserver
+        ],
         routes: AppRoute().screens,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

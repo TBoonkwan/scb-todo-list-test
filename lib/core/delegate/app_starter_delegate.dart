@@ -1,6 +1,6 @@
 import 'package:get_storage/get_storage.dart';
 import 'package:scb_test/core/constants/app_constants.dart';
-import 'package:scb_test/features/passcode/config/input_passcode_route.dart';
+import 'package:scb_test/features/passcode/config/passcode_route.dart';
 import 'package:scb_test/features/todo/config/todo_list_route.dart';
 
 mixin AppStarterDelegate {
@@ -18,7 +18,7 @@ mixin AppStarterDelegate {
     final Duration differentTime = DateTime.parse(lastActive).difference(now);
 
     if (differentTime.inSeconds <= -10) {
-      return InputPasscodeRoute.inputPasscodeScreen;
+      return PasscodeRoute.inputPasscodeScreen;
     } else {
       return TodoListRoute.todoListScreen;
     }

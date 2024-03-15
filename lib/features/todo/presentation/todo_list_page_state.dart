@@ -38,5 +38,7 @@ enum TodoListPageEventState { initial, noTask, update, none }
 enum TodoListPageActionState {
   delete,
   loadMore,
+  verifyPasscode,
+  changePasscode,
   none,
 }

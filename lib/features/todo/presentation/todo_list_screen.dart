@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scb_test/features/base/base_page.dart';
+import 'package:scb_test/features/passcode/config/passcode_route.dart';
+import 'package:scb_test/features/passcode/data/passcode_constants.dart';
+import 'package:scb_test/features/passcode/presentation/change_passcode/change_passcode_screen.dart';
+import 'package:scb_test/features/passcode/presentation/input_passcode/input_passcode_screen.dart';
 import 'package:scb_test/features/todo/data/constants/todo_list_constants.dart';
 import 'package:scb_test/features/todo/domain/entity/todo_list_ui_model.dart';
 import 'package:scb_test/features/todo/presentation/components/todo_list_filter_status_tab.dart';
@@ -46,91 +50,134 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
   Widget child(BuildContext context) {
     final TodoListPageCubit cubit = context.read<TodoListPageCubit>();
 
-    return Scaffold(
-      body: NotificationListener<ScrollNotification>(
-        onNotification: (scrollNotification) {
-          if (scrollNotification.metrics.pixels ==
-              scrollNotification.metrics.maxScrollExtent) {
-            cubit.loadMoreItem();
-          }
-          return true;
-        },
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              automaticallyImplyLeading: false,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(36),
-                  bottomRight: Radius.circular(36),
-                ),
+    return BlocListener<TodoListPageCubit, TodoListPageState>(
+      listenWhen: (prev, current) => current.actionState != prev.actionState,
+      listener: (context, state) async {
+        switch (state.actionState) {
+          case TodoListPageActionState.verifyPasscode:
+            await Navigator.of(context).pushNamed(
+              PasscodeRoute.inputPasscodeScreen,
+              arguments: InputPasscodeScreenConfig(
+                title: "Please enter your current PIN",
+                canBackOrClose: true,
               ),
-              toolbarHeight: 56,
-              pinned: true,
-              bottom: PreferredSize(
-                preferredSize: const Size(double.infinity, 56),
-                child: TodoListFilterStatusTab(
-                  tabList: tabList,
-                  tabSelected: (status) {
-                    context.read<TodoListPageCubit>().initial(status: status);
-                  },
-                ),
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                BlocConsumer<TodoListPageCubit, TodoListPageState>(
-                  listenWhen: (prev, current) => current.eventState != prev.eventState,
-                  listener: (context, state) async {},
-                  builder: (BuildContext context, TodoListPageState state) {
-                    if (state.eventState == TodoListPageEventState.initial) {
-                      return LoadingIndicator(
-                        size: Size(
-                          MediaQuery.sizeOf(context).width,
-                          MediaQuery.sizeOf(context).height * 0.7,
-                        ),
-                      );
-                    }
+            );
 
-                    if (state.eventState == TodoListPageEventState.noTask) {
-                      return SizedBox(
-                        width: MediaQuery.sizeOf(context).width,
-                        height: MediaQuery.sizeOf(context).height * 0.7,
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16.0),
-                          child: Center(
-                            child: Text("No task"),
+            cubit.navigateToChangePasscode();
+            break;
+          case TodoListPageActionState.changePasscode:
+            await Navigator.of(context).pushNamed(
+              PasscodeRoute.changePasscodeScreen,
+              arguments: ChangePasscodeArguments(
+                password: "xxxxxx",
+                passcodeType: PasscodeType.createPasscode,
+              ),
+            );
+            break;
+          default:
+        }
+      },
+      child: Scaffold(
+        body: NotificationListener<ScrollNotification>(
+          onNotification: (scrollNotification) {
+            if (scrollNotification.metrics.pixels ==
+                scrollNotification.metrics.maxScrollExtent) {
+              cubit.loadMoreItem();
+            }
+            return true;
+          },
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                automaticallyImplyLeading: false,
+                actions: [
+                  IconButton(
+                    onPressed: () async {
+                      cubit.navigateToVerifyPasscode();
+                    },
+                    icon: const Icon(
+                      Icons.account_circle_outlined,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                ],
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(36),
+                    bottomRight: Radius.circular(36),
+                  ),
+                ),
+                toolbarHeight: 56,
+                pinned: true,
+                bottom: PreferredSize(
+                  preferredSize: const Size(double.infinity, 56),
+                  child: TodoListFilterStatusTab(
+                    tabList: tabList,
+                    tabSelected: (status) {
+                      context.read<TodoListPageCubit>().initial(status: status);
+                    },
+                  ),
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  BlocConsumer<TodoListPageCubit, TodoListPageState>(
+                    listenWhen: (prev, current) =>
+                        current.eventState != prev.eventState,
+                    listener: (context, state) async {},
+                    builder: (BuildContext context, TodoListPageState state) {
+                      if (state.eventState == TodoListPageEventState.initial) {
+                        return LoadingIndicator(
+                          size: Size(
+                            MediaQuery.sizeOf(context).width,
+                            MediaQuery.sizeOf(context).height * 0.7,
                           ),
-                        ),
-                      );
-                    }
+                        );
+                      }
 
-                    if (state.eventState == TodoListPageEventState.update) {
-                      return TodoListContent(
-                        taskList: state.taskList,
-                      );
-                    }
+                      if (state.eventState == TodoListPageEventState.noTask) {
+                        return SizedBox(
+                          width: MediaQuery.sizeOf(context).width,
+                          height: MediaQuery.sizeOf(context).height * 0.7,
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16.0),
+                            child: Center(
+                              child: Text("No task"),
+                            ),
+                          ),
+                        );
+                      }
 
-                    return const SizedBox();
-                  },
-                ),
-              ]),
-            )
-          ],
+                      if (state.eventState == TodoListPageEventState.update) {
+                        return TodoListContent(
+                          taskList: state.taskList,
+                        );
+                      }
+
+                      return const SizedBox();
+                    },
+                  ),
+                ]),
+              )
+            ],
+          ),
         ),
-      ),
-      bottomNavigationBar: BlocConsumer<TodoListPageCubit, TodoListPageState>(
-        listenWhen: (prev, current) => current.eventState != prev.eventState,
-        listener: (context, state) async {},
-        builder: (context, state) {
-          if (state.actionState == TodoListPageActionState.loadMore) {
-            return const LoadingIndicator(size: Size(80, 80));
-          }
+        bottomNavigationBar: BlocConsumer<TodoListPageCubit, TodoListPageState>(
+          listenWhen: (prev, current) => current.eventState != prev.eventState,
+          listener: (context, state) async {},
+          builder: (context, state) {
+            if (state.actionState == TodoListPageActionState.loadMore) {
+              return const LoadingIndicator(size: Size(80, 80));
+            }
 
-          return const SizedBox(
-            height: 0,
-          );
-        },
+            return const SizedBox(
+              height: 0,
+            );
+          },
+        ),
       ),
     );
   }
