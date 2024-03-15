@@ -16,6 +16,7 @@ class ChangePasswordPageCubit extends Cubit<ChangePasswordPageState> {
 
     emit(
       state.copyWith(
+        eventState: InputPasscodePageEventState.initial,
         newPasscode: password,
       ),
     );
@@ -31,16 +32,6 @@ class ChangePasswordPageCubit extends Cubit<ChangePasswordPageState> {
     );
   }
 
-  void changeNewPasscode({
-    required String passcode,
-  }) {
-    emit(
-      state.copyWith(
-        confirmPasscode: passcode,
-      ),
-    );
-  }
-
   void createPasscodeSuccess() {
     GetStorage storage = GetStorage();
     storage.write(AppConstants.passcode, state.newPasscode.toString());
@@ -53,6 +44,6 @@ class ChangePasswordPageCubit extends Cubit<ChangePasswordPageState> {
   }
 
   void reset() {
-    emit(ChangePasswordPageState());
+    emit(const ChangePasswordPageState());
   }
 }

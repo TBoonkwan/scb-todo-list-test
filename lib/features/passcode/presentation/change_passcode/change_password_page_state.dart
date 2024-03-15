@@ -2,33 +2,38 @@ import "package:equatable/equatable.dart";
 
 class ChangePasswordPageState extends Equatable {
   final String? newPasscode;
-  final String? confirmPasscode;
   final InputPasscodePageActionState? actionState;
+  final InputPasscodePageEventState? eventState;
 
   const ChangePasswordPageState({
-    this.newPasscode = "",
-    this.confirmPasscode = "",
+    this.newPasscode = "xxxxxx",
     this.actionState = InputPasscodePageActionState.none,
+    this.eventState = InputPasscodePageEventState.none,
   });
 
   @override
   List<Object?> get props => [
         newPasscode,
-        confirmPasscode,
+        eventState,
         actionState,
       ];
 
   ChangePasswordPageState copyWith({
     String? newPasscode,
-    String? confirmPasscode,
+    InputPasscodePageEventState? eventState,
     InputPasscodePageActionState? actionState,
   }) {
     return ChangePasswordPageState(
       newPasscode: newPasscode ?? this.newPasscode,
-      confirmPasscode: confirmPasscode ?? this.confirmPasscode,
+      eventState: eventState ?? this.eventState,
       actionState: actionState ?? this.actionState,
     );
   }
+}
+
+enum InputPasscodePageEventState {
+  initial,
+  none,
 }
 
 enum InputPasscodePageActionState {

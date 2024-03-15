@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screen_lock/flutter_screen_lock.dart';
 import 'package:scb_test/features/passcode/presentation/components/scb_passcode_screen.dart';
 import 'package:scb_test/features/passcode/presentation/input_passcode/input_passcode_page_cubit.dart';
 import 'package:scb_test/features/passcode/presentation/input_passcode/input_passcode_page_state.dart';
@@ -45,7 +44,8 @@ class _InputPasscodeScreenState extends State<InputPasscodeScreen> {
     if (arguments != null && arguments is InputPasscodeScreenConfig) {
       _inputScreenConfig = arguments;
     } else {
-      _inputScreenConfig = InputPasscodeScreenConfig(title: 'Please enter your PIN');
+      _inputScreenConfig =
+          InputPasscodeScreenConfig(title: 'Please enter your PIN');
     }
 
     return PopScope(
@@ -71,15 +71,18 @@ class _InputPasscodeScreenState extends State<InputPasscodeScreen> {
         child: Scaffold(
           body: Stack(
             children: [
-              SCBPasscodeScreen(
-                title: _inputScreenConfig?.title.toString() ?? "",
-                password: context
-                    .read<InputPasscodePageCubit>()
-                    .state
-                    .passcode
-                    .toString(),
-                unlockAccount: () {
-                  context.read<InputPasscodePageCubit>().inputPasscodeSuccess();
+              BlocBuilder<InputPasscodePageCubit, InputPasscodePageState>(
+                builder: (BuildContext context, InputPasscodePageState state) {
+                  if (state.eventState == InputPasscodePageEventState.none) {
+                    return const SizedBox();
+                  }
+                  return SCBPasscodeScreen(
+                    title: _inputScreenConfig?.title.toString() ?? "",
+                    password: state.passcode.toString(),
+                    unlockAccount: () {
+                      context.read<InputPasscodePageCubit>().inputPasscodeSuccess();
+                    },
+                  );
                 },
               ),
               Builder(

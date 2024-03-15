@@ -4,26 +4,21 @@ import "package:scb_test/core/constants/app_constants.dart";
 import "package:scb_test/features/passcode/presentation/input_passcode/input_passcode_page_state.dart";
 
 class InputPasscodePageCubit extends Cubit<InputPasscodePageState> {
-  InputPasscodePageCubit() : super(const InputPasscodePageState()) {
+  InputPasscodePageCubit() : super(const InputPasscodePageState());
 
-  }
-
-  void init(){
+  void init() {
     GetStorage storage = GetStorage();
-    emit(
-      state.copyWith(
-        passcode: storage.read(AppConstants.passcode) ?? "123456",
-      ),
-    );
+    emit(state.copyWith(
+      eventState: InputPasscodePageEventState.initial,
+      passcode: storage.read(AppConstants.passcode) ?? "123456",
+    ));
   }
 
   void inputPasscodeSuccess() {
-    emit(
-        state.copyWith(actionState: InputPasscodePageActionState.inputSuccess));
+    emit(state.copyWith(actionState: InputPasscodePageActionState.inputSuccess));
   }
 
   void reset() {
-    emit(
-        state.copyWith(actionState: InputPasscodePageActionState.none));
+    emit(const InputPasscodePageState());
   }
 }

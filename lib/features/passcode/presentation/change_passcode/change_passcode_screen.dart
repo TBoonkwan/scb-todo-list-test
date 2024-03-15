@@ -79,9 +79,6 @@ class _ChangePasscodeScreenState extends State<ChangePasscodeScreen> {
                 textInputChanged: (password) {
                   if (pageCubit?.passcodeType == PasscodeType.createPasscode) {
                     pageCubit?.inputPasscodeSuccess(password: password);
-                  } else if (pageCubit?.passcodeType ==
-                      PasscodeType.createPasscode) {
-                    pageCubit?.changeNewPasscode(passcode: password);
                   }
                 },
                 unlockAccount: () {

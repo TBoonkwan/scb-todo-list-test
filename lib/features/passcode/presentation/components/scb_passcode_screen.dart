@@ -68,8 +68,17 @@ class SCBPasscodeScreen extends StatelessWidget {
         ),
       ),
       keyPadConfig: KeyPadConfig(
-        buttonConfig: KeyPadButtonConfig(size: 64),
-        actionButtonConfig: KeyPadButtonConfig(
+        buttonConfig: KeyPadButtonConfig(
+          size: 64,
+          foregroundColor: Colors.white,
+          buttonStyle: OutlinedButton.styleFrom(
+            side: const BorderSide(width: 1, color: Colors.white),
+            backgroundColor: AppColor.primaryColor,
+          ),
+        ),
+        actionButtonConfig:  KeyPadButtonConfig(
+          size: 64,
+          foregroundColor: Colors.white,
           buttonStyle: OutlinedButton.styleFrom(
             side: const BorderSide(width: 1, color: Colors.white),
             backgroundColor: AppColor.primaryColor,
