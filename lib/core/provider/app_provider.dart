@@ -9,9 +9,6 @@ class AppProvider {
 
   AppProvider() {
     _provider
-      ..add(BlocProvider<BasePageCubit>(
-        create: (BuildContext context) => BasePageCubit(),
-      ))
       ..addAll(TodoListProvider.providers)
       ..addAll(PasscodeProvider.providers);
   }

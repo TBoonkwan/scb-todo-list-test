@@ -17,19 +17,14 @@ abstract class BasePage<T extends StatefulWidget> extends State<T> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      basePageCubit = context.read<BasePageCubit>()..startTimer();
+      basePageCubit = context.read<BasePageCubit>()..startTimer()..updateLatestActive();
     });
 
     _listener = AppLifecycleListener(onResume: () {
-      basePageCubit
-        ?..reset()
-        ..startTimer();
+      basePageCubit?..reset()..startTimer()..updateLatestActive();
     }, onStateChange: (state) {
-      if (state == AppLifecycleState.inactive &&
-          basePageCubit?.isTimeout() == false) {
-        basePageCubit
-          ?..reset()
-          ..updateLatestActive();
+      if (state == AppLifecycleState.inactive && basePageCubit?.isTimeout() == false) {
+        basePageCubit?..reset()..updateLatestActive();
       }
     });
   }
@@ -43,34 +38,25 @@ abstract class BasePage<T extends StatefulWidget> extends State<T> {
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      onPointerDown: (_) {
-        basePageCubit
-          ?..reset()
-          ..startTimer();
+    return BlocListener<BasePageCubit, BasePageState>(
+      listenWhen: (prev, current) => current.eventState != prev.eventState,
+      listener: (context, state) async {
+        switch (state.eventState) {
+          case BasePageEventState.timeout:
+            await Navigator.of(context).pushNamed(
+              PasscodeRoute.inputPasscodeScreen,
+              arguments: InputPasscodeScreenConfig(
+                canBackOrClose: false,
+                title: 'Please enter your PIN',
+              ),
+            );
+            basePageCubit?..reset()..startTimer()..updateLatestActive();
+            break;
+          default:
+        }
       },
-      child: BlocListener<BasePageCubit, BasePageState>(
-        listenWhen: (prev, current) => current.eventState != prev.eventState,
-        listener: (context, state) async {
-          switch (state.eventState) {
-            case BasePageEventState.timeout:
-              await Navigator.of(context).pushNamed(
-                PasscodeRoute.inputPasscodeScreen,
-                arguments: InputPasscodeScreenConfig(
-                  canBackOrClose: false,
-                  title: 'Please enter your PIN',
-                ),
-              );
-              basePageCubit
-                ?..reset()
-                ..startTimer();
-              break;
-            default:
-          }
-        },
-        child: child(
-          context,
-        ),
+      child: child(
+        context,
       ),
     );
   }

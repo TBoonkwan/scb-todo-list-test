@@ -54,6 +54,22 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
       listenWhen: (prev, current) => current.actionState != prev.actionState,
       listener: (context, state) async {
         switch (state.actionState) {
+          case TodoListPageActionState.networkError:
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text("Sorry"),
+                content: const Text(
+                    "Cannot get your task right now, please try again later"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"),
+                  ),
+                ],
+              ),
+            );
+            break;
           case TodoListPageActionState.verifyPasscode:
             await Navigator.of(context).pushNamed(
               PasscodeRoute.inputPasscodeScreen,
@@ -154,6 +170,22 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
                       if (state.eventState == TodoListPageEventState.update) {
                         return TodoListContent(
                           taskList: state.taskList,
+                        );
+                      }
+
+                      if (state.eventState == TodoListPageEventState.networkError) {
+                        return SizedBox(
+                          height: MediaQuery.sizeOf(context).height * 0.7,
+                          child: Center(
+                            child: TextButton(
+                              onPressed: () {
+                                cubit.initial(status: TodoListStatus.todo.value);
+                              },
+                              child: const Text(
+                                "Try Again",
+                              ),
+                            ),
+                          ),
                         );
                       }
 

@@ -1,4 +1,6 @@
+import "package:dio/dio.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:scb_test/core/exception/app_exception.dart";
 import "package:scb_test/features/todo/data/constants/todo_list_constants.dart";
 import "package:scb_test/features/todo/data/model/task.dart";
 import "package:scb_test/features/todo/data/model/todo_list_request.dart";
@@ -20,8 +22,9 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
     required this.getTodoListUseCase,
   }) : super(const TodoListPageState());
 
-  Future<TodoListModel> fetchTodoList() async =>
-      await getTodoListUseCase.getTodoList(
+  Future<TodoListModel> fetchTodoList() async {
+    try {
+      return await getTodoListUseCase.getTodoList(
         allTask: allTask,
         request: TodoListRequest(
           offset: nextPage,
@@ -31,6 +34,10 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
           status: currentStatus.toUpperCase(),
         ),
       );
+    } on DioException {
+      throw AppException();
+    }
+  }
 
   Future initial({
     required String status,
@@ -43,26 +50,33 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
       state.copyWith(eventState: TodoListPageEventState.initial),
     );
 
-    final TodoListModel model = await fetchTodoList();
+    try {
+      final TodoListModel model = await fetchTodoList();
 
-    totalPage = model.totalPage;
+      totalPage = model.totalPage;
 
-    List<TodoListUIModel> uiModel = model.uiModel;
+      List<TodoListUIModel> uiModel = model.uiModel;
 
-    if (uiModel.isEmpty == true) {
-      emit(
-        state.copyWith(
-          taskList: [],
-          eventState: TodoListPageEventState.noTask,
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          taskList: uiModel,
-          eventState: TodoListPageEventState.update,
-        ),
-      );
+      if (uiModel.isEmpty == true) {
+        emit(
+          state.copyWith(
+            taskList: [],
+            eventState: TodoListPageEventState.noTask,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            taskList: uiModel,
+            eventState: TodoListPageEventState.update,
+          ),
+        );
+      }
+    } on Exception {
+      emit(state.copyWith(
+        actionState: TodoListPageActionState.networkError,
+        eventState: TodoListPageEventState.networkError,
+      ));
     }
   }
 
@@ -80,19 +94,26 @@ class TodoListPageCubit extends Cubit<TodoListPageState> {
       ),
     );
 
-    final TodoListModel model = await fetchTodoList();
+    try {
+      final TodoListModel model = await fetchTodoList();
 
-    emit(
-      state.copyWith(
-        actionState: TodoListPageActionState.none,
-      ),
-    );
+      emit(
+        state.copyWith(
+          actionState: TodoListPageActionState.none,
+        ),
+      );
 
-    emit(
-      state.copyWith(
-        taskList: model.uiModel,
-      ),
-    );
+      emit(
+        state.copyWith(
+          taskList: model.uiModel,
+        ),
+      );
+    } on Exception {
+      nextPage--;
+      emit(state.copyWith(
+        actionState: TodoListPageActionState.networkError,
+      ));
+    }
   }
 
   void deleteTask({

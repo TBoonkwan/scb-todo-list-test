@@ -9,12 +9,11 @@ class BasePageCubit extends Cubit<BasePageState> {
   final storage = GetStorage();
   final Duration maxTimeout = const Duration(seconds: 10);
 
-  late Timer? timer;
+  Timer? timer;
 
   BasePageCubit() : super(const BasePageState());
 
   void startTimer() {
-    updateLatestActive();
     timer = Timer.periodic(
       maxTimeout,
       (Timer timer) {
