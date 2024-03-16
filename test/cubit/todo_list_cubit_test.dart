@@ -75,4 +75,6 @@ void main() {
       expect(pageCubit.state.taskList.length, 1);
     });
   });
+
+  tearDown(() => pageCubit.close());
 }
