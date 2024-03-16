@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 class TodoListModel {
   final num nextPage;
   final num totalPage;
@@ -10,7 +12,7 @@ class TodoListModel {
   });
 }
 
-class TodoListUIModel {
+class TodoListUIModel extends Equatable{
   final String title;
   final List<MyTask> taskList;
 
@@ -18,9 +20,12 @@ class TodoListUIModel {
     required this.title,
     required this.taskList,
   });
+
+  @override
+  List<Object?> get props =>[title,taskList];
 }
 
-class MyTask {
+class MyTask extends Equatable{
   final String id;
   final String title;
   final String description;
@@ -30,4 +35,7 @@ class MyTask {
     required this.title,
     required this.description,
   });
+
+  @override
+  List<Object?> get props => [id,title,description];
 }

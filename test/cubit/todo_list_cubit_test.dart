@@ -1,6 +1,4 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -61,7 +59,9 @@ void main() {
 
       await pageCubit.initial(status: TodoListStatus.todo.value);
 
-      verify(mockUseCase.getTodoList(allTask: anyNamed("allTask"), request: anyNamed("request"))).called(1);
+      verify(mockUseCase.getTodoList(
+              allTask: anyNamed("allTask"), request: anyNamed("request")))
+          .called(1);
 
       expect(pageCubit.currentStatus, TodoListStatus.todo.value);
 
@@ -74,6 +74,61 @@ void main() {
 
       expect(pageCubit.state.taskList.length, 1);
     });
+
+    blocTest<TodoListPageCubit, TodoListPageState>(
+      'emits initial and update when initial page',
+      build: () {
+        final TodoListModel todoListModel = TodoListModel(
+          nextPage: 1,
+          totalPage: 1,
+          uiModel: [
+            TodoListUIModel(
+              title: "Today",
+              taskList: [
+                MyTask(
+                  id: "id",
+                  title: "title",
+                  description: "description",
+                )
+              ],
+            )
+          ],
+        );
+
+        when(
+          mockUseCase.getTodoList(
+            request: anyNamed("request"),
+            allTask: anyNamed("allTask"),
+          ),
+        ).thenAnswer((_) async => todoListModel);
+
+        return TodoListPageCubit(getTodoListUseCase: mockUseCase);
+      },
+      act: (bloc) => bloc.initial(status: TodoListStatus.todo.value),
+      expect: () => <TodoListPageState>[
+        const TodoListPageState(
+            taskList: [],
+            eventState: TodoListPageEventState.initial,
+            actionState: TodoListPageActionState.none
+        ),
+        TodoListPageState(
+            taskList: [
+              TodoListUIModel(
+                title: "Today",
+                taskList: [
+                  MyTask(
+                    id: "id",
+                    title: "title",
+                    description: "description",
+                  )
+                ],
+              )
+            ],
+            eventState: TodoListPageEventState.update,
+            actionState: TodoListPageActionState.none
+        ),
+      ],
+    );
   });
 
   tearDown(() => pageCubit.close());
