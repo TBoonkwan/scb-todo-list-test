@@ -71,15 +71,16 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
             );
             break;
           case TodoListPageActionState.verifyPasscode:
-            await Navigator.of(context).pushNamed(
+            var result = await Navigator.of(context).pushNamed(
               PasscodeRoute.inputPasscodeScreen,
               arguments: InputPasscodeScreenConfig(
                 title: "Please enter your current PIN",
                 canBackOrClose: true,
               ),
             );
-
-            cubit.navigateToChangePasscode();
+            if (result != null) {
+              cubit.navigateToChangePasscode();
+            }
             break;
           case TodoListPageActionState.changePasscode:
             await Navigator.of(context).pushNamed(
@@ -173,13 +174,15 @@ class _TodoListScreenState extends BasePage<TodoListScreen> {
                         );
                       }
 
-                      if (state.eventState == TodoListPageEventState.networkError) {
+                      if (state.eventState ==
+                          TodoListPageEventState.networkError) {
                         return SizedBox(
                           height: MediaQuery.sizeOf(context).height * 0.7,
                           child: Center(
                             child: TextButton(
                               onPressed: () {
-                                cubit.initial(status: TodoListStatus.todo.value);
+                                cubit.initial(
+                                    status: TodoListStatus.todo.value);
                               },
                               child: const Text(
                                 "Try Again",

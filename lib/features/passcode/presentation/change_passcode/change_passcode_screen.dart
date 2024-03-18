@@ -61,7 +61,7 @@ class _ChangePasscodeScreenState extends State<ChangePasscodeScreen> {
                   break;
                 case InputPasscodePageActionState.success:
                   pageCubit?.reset();
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true);
                   break;
                 default:
               }
