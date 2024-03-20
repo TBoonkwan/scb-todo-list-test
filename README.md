@@ -3,6 +3,7 @@ This project make for SCB Technical Test
 
 # Required
 - Flutter **3.16.9**
+- Please use develop branch to test
 
 # Optional
 - Required FVM to config flutter version
