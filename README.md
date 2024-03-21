@@ -1,5 +1,10 @@
 # SCBTodoListTest
-This project make for SCB Technical Test
+This project a Flutter project that make for SCB Technical about manage todo-list
+
+# Feature
+- TodoList
+  - get all todo list by status
+  - delete task
 
 # Required
 - Flutter **3.16.9**
